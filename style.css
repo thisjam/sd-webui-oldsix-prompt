@@ -37,7 +37,7 @@
 
  
 .oldsix-btn:hover::after{
-    content: attr(data-tit);
+    content: attr(data-sixoldtit);
     position: absolute;
     top: 100%;
     left: 0;

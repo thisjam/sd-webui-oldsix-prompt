@@ -44,7 +44,7 @@ def traverse_dict(dictionary,deep=0,html=''):
             html= traverse_dict(value,deep+1,html)  
         else:
         #     print(key+str(deep), ":", value)      
-            html+='<button class="sm secondary gradio-button svelte-1ipelgc oldsix-btn" data-tit="{1}" onclick="addPrompt(this,\'{1}\')">{0}</button>'.format(key,value) 
+            html+='<button class="sm secondary gradio-button svelte-1ipelgc oldsix-btn" data-sixoldtit="{1}" onclick="addPrompt(this,\'{1}\')">{0}</button>'.format(key,value) 
             count=len(dictionary)-1         
             if(index==count):
                  for i in range(deep):                    
