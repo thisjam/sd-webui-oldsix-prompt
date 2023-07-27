@@ -1,0 +1,69 @@
+﻿{
+  "対象": {
+    "1girl":"1girl",
+    "1boy":"1boy",
+    "1other":"1other",
+    "multiple girls":"multiple girls"
+  },
+  "年齢": {
+    "青少年（13-19）": "teen",
+    "青少年早期（11-15）": "early teen",
+    "大人": "adult",
+    "老人": "elder",
+    "子供": "child",
+    "幼稚園": "kindergartener",
+    "幼儿": "toddler",
+    "萝莉": "loli",
+    "正太": "shota"
+  },
+  "肤色": {
+    "白": "white skin",
+    "苍白": "pale skin",
+    "褐色": "dark skin",
+    "有光泽": "shiny skin",
+    "有色皮肤": "colored skin"
+  },
+  "皮肤": {
+    "日晒": "tan",
+    "日晒痕迹": "tanlines",
+    "纹身": "tattoo",
+    "油性": "oil"
+  },
+  "体形": {
+    "运动员": "athlete",
+    "模特": "model",
+    "苗条": "slender",
+    "诱惑": "glamor",
+    "丰满": "plump",
+    "肥胖": "fat",
+    "高大": "tall",
+    "纤弱": "petite",
+    "Q版": "chibi",
+    "妊娠": "pregnant",
+    "肌肉": "muscular",
+    "细腰": "narrow waist",
+    "大屁股": "wide hips"
+  },
+  "胸": {
+    "平胸": "flat chest",
+    "小胸": "small breasts",
+    "普通": "medium breasts",
+    "巨乳": "large breasts",
+    "爆乳": "huge breasts",
+    "下垂": "hanging breasts"
+  },
+  "身体部位": {
+    "腋窝": "armpits",
+    "鎖骨": "collarbone",
+    "肚脐": "navel",
+    "屁股": "ass",
+    "大腿": "thighs"
+  },
+  "翼": {
+    "翅膀": "wings",
+    "蝠翼": "bat wings",
+    "蝶翼": "butterfly wings",
+    "悪魔翼": "demon wings",
+    "龙翼": "dragon wings"
+  }
+}

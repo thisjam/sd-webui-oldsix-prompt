@@ -1,0 +1,23 @@
+﻿{
+  "负面提示": {
+    "NSFW": "nsfw,logo,text",
+    "embeddings": "badhandv4,EasyNegative,ng_deepnegative_v1_75t,rev2-badprompt,verybadimagenegative_v1.3,negative_hand-neg,bad-picture-chill-75v",
+    "变异手指": "mutated hands and fingers",
+    "畸形的": "deformed",
+    "解剖不良": "bad anatomy",
+    "毁容": "disfigured",
+    "脸不好": "poorly drawn face",
+    "变异的": "mutated",
+    "多余肢体": "extra limb",
+    "丑陋": "ugly",
+    "手画得差": "poorly drawn hands",
+    "缺少的肢体": "missing limb",
+    "漂浮的四肢": "floating limbs",
+    "肢体不连贯": "disconnected limbs",
+    "畸形的手": "malformed hands",
+    "脱离焦点": "out of focus",
+    "长颈": "long neck",
+    "身体长": "long body",
+    "全选": "nsfw,logo,text,badhandv4,EasyNegative,ng_deepnegative_v1_75t,rev2-badprompt,verybadimagenegative_v1.3,negative_hand-neg,mutated hands and fingers,poorly drawn face,extra limb,missing limb,disconnected limbs,malformed hands,ugly"
+  }
+}
