@@ -33,6 +33,7 @@
     margin: 3px !important;
     position: relative !important; 
     display: inline-block!important; 
+    overflow:visible!important
 }
 
  

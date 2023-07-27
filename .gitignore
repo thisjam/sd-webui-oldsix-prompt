@@ -1,3 +1,4 @@
 /cache/*
 /test/*
 /video/*
+/script/__pycache__/*
