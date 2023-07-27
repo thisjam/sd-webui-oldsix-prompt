@@ -1,4 +1,4 @@
-import modules.scripts as scripts
+﻿import modules.scripts as scripts
 import gradio as gr
 import os,json
 from pathlib import Path
@@ -10,11 +10,11 @@ def LoadTagsFile():
       work_basedir = os.path.dirname(current_folder)   #本插件目录  
       path = work_basedir+ r"/json"
       files = os.listdir( path ) 
-      listjsonpath="extensions/sd-webui-oldsix_prompt/json/"       
+      #listjsonpath="extensions/sd-webui-oldsix_prompt/json/"       
       dic={}
       for item in files:
         if item.endswith(".json"):
-                filepath=listjsonpath+item
+                filepath=path+'/'+item
                 filename=filepath[filepath.rindex('/') + 1:-5]
                 with open(filepath, "r",encoding="utf-8-sig") as f:
                         res=json.loads(f.read())                       
