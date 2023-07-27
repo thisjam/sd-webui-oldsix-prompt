@@ -1,5 +1,6 @@
 ﻿{
   "负面提示": {
+    "全选": "nsfw,logo,text,badhandv4,EasyNegative,ng_deepnegative_v1_75t,rev2-badprompt,verybadimagenegative_v1.3,negative_hand-neg,mutated hands and fingers,poorly drawn face,extra limb,missing limb,disconnected limbs,malformed hands,ugly",
     "NSFW": "nsfw,logo,text",
     "embeddings": "badhandv4,EasyNegative,ng_deepnegative_v1_75t,rev2-badprompt,verybadimagenegative_v1.3,negative_hand-neg,bad-picture-chill-75v",
     "变异手指": "mutated hands and fingers",
@@ -17,7 +18,6 @@
     "畸形的手": "malformed hands",
     "脱离焦点": "out of focus",
     "长颈": "long neck",
-    "身体长": "long body",
-    "全选": "nsfw,logo,text,badhandv4,EasyNegative,ng_deepnegative_v1_75t,rev2-badprompt,verybadimagenegative_v1.3,negative_hand-neg,mutated hands and fingers,poorly drawn face,extra limb,missing limb,disconnected limbs,malformed hands,ugly"
+    "身体长": "long body"
   }
 }
