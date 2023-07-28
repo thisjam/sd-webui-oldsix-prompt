@@ -23,13 +23,7 @@ def LoadTagsFile():
  
    
       return dic          
-                
-                
-  
-
- 
- 
- 
+                             
 def traverse_dict(dictionary,deep=0,html=''):
     index=0
     for key, value in  dictionary.items():
@@ -44,7 +38,7 @@ def traverse_dict(dictionary,deep=0,html=''):
             html= traverse_dict(value,deep+1,html)  
         else:
         #     print(key+str(deep), ":", value)      
-            html+='<button class="sm secondary gradio-button svelte-1ipelgc oldsix-btn" data-sixoldtit="{1}" onclick="addPrompt(this,\'{1}\')">{0}</button>'.format(key,value) 
+            html+='<button class="sm secondary gradio-button svelte-1ipelgc oldsix-btn" data-sixoldtit="{1}" onclick="addPrompt(this,\'{1}\')" >{0}</button>'.format(key,value) 
             count=len(dictionary)-1         
             if(index==count):
                  for i in range(deep):                    
@@ -61,23 +55,32 @@ class Script(scripts.Script):
         def show(self, is_img2img):
                 return scripts.AlwaysVisible
         
+       
+        
+        def after_component(self, component, **kwargs):   
+           aa=component
+           bb=kwargs
+           pass
            
         def ui(self, is_img2img):
-            eid=None    
+            eid=None  
+            tabid=None  
             if(is_img2img):
                  eid='oldsix-prompt2'
+                 tabid='oldsix-tab1'
             else:
-                 eid='oldsix-prompt1'        
+                 eid='oldsix-prompt1'    
+                 tabid='oldsix-tab2'    
             diclist=LoadTagsFile()   
          
             with gr.Row(elem_id=eid):
-                       with gr.Accordion(label="提示词",open=False):
-                             oldsix_checkbox=gr.Checkbox(label="负面框输入", value=False) 
-                             with gr.Tabs():                                     
+                       with gr.Accordion(label="SixGod_K提示词",open=False):
+                            #  oldsix_checkbox=gr.Checkbox(label="负面框输入", value=False) 
+                            #  btnreload=gr.Button('🔄', variant='secondary',elem_classes="oldsix-reload")
+                             with gr.Tabs(elem_id=tabid):                                     
                                 for item in diclist:
                                     with gr.TabItem(item, elem_id=item):                                      
-                                            html=traverse_dict(diclist[item])[6:] 
-                                        #     html='<div class="oldsix-content">'+html+'</div>'                                         
+                                            html=traverse_dict(diclist[item])[6:]                                                                           
                                             gr.HTML(html)                                                                                             
             return None
     

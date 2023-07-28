@@ -21,18 +21,15 @@ function getEle(key) {
 }
 
 
+function addNPrompt(isimg2img,text){    
+    let elementprompt= isimg2img?Elements.imgnpromt : Elements.txtnpromt
+    elementprompt.focus();
+    document.execCommand('insertText',false,text + ',')
+}
 
-function addPrompt(eve, text) {
-    let ischeck;
-    let elementprompt;
-    if (eve.dataset.page) {
-        ischeck = Elements.check2.checked
-        elementprompt = ischeck ? Elements.imgnpromt : Elements.imgpromt
-    } else {
-        ischeck = Elements.check1.checked
-        elementprompt = ischeck ? Elements.txtnpromt : Elements.txtpromt
-    }
 
+function addPrompt(eve, text) {   
+    let elementprompt= eve.dataset.page?Elements.imgpromt : Elements.txtpromt
     elementprompt.focus();
     document.execCommand('insertText',false,text + ',')
     // elementprompt.value += text + ','
@@ -43,24 +40,32 @@ function addPrompt(eve, text) {
 
 onUiLoaded(async => {
     Elements = loadNodes()
-
-    Elements.check1 = Elements.prompt.querySelector("input")
-    Elements.check1.id = "oldsix-check1"
+  
     //    Elements.txt2img.parentNode.insertBefore(Elements.prompt,Elements.txt2img.nextSibling)
     Elements.txt2img.appendChild(Elements.prompt)
     let contents = Elements.prompt.querySelectorAll(".prose")
     contents.forEach(element => {
         element.classList.add("oldsix-content")
     });
+    btns1 = Elements.prompt.querySelectorAll(".oldsix-btn")
+    btns1.forEach(item=>{
+        item.addEventListener('contextmenu',function(e){
+            e.preventDefault();
+            addNPrompt(item.dataset.page,item.dataset.sixoldtit)
+          })
+    })
 
 
     Elements.img2img.appendChild(Elements.prompt2)
     //    Elements.img2img.parentNode.insertBefore(Elements.prompt2,Elements.img2img.nextSibling)
-    btns = Elements.prompt2.querySelectorAll(".oldsix-btn")
-    Elements.check2 = Elements.prompt2.querySelector("input")
-    Elements.check2.id = "oldsix-check2"
-    for (const item of btns) {
+    btns2 = Elements.prompt2.querySelectorAll(".oldsix-btn")
+  
+    for (const item of btns2) {
         item.dataset.page = 'img2img'
+        item.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            addNPrompt(item.dataset.page,item.dataset.sixoldtit)
+          })
     }
     let contents2 = Elements.prompt2.querySelectorAll(".prose")
     contents2.forEach(element => {
