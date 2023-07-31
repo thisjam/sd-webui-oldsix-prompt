@@ -59,10 +59,10 @@ async function getJsonStr() {
     return val1||val2
 }
 
-// function clearTextarea(){
-//    document.querySelector("#oldsix-area1 textarea").value='area1'
-//    document.querySelector("#oldsix-area2 textarea").value='area2'
-// }
+function clearTextarea(){
+   document.querySelector("#oldsix-area1 textarea").value='area1'
+   document.querySelector("#oldsix-area2 textarea").value='area2'
+}
 
 function createBtnTitle(name,parent){
    let div=document.createElement('div')
@@ -171,7 +171,7 @@ async function loadCustomUI(){
         
         reloadNodes(jsonstr, Elements.btnReload[0])
         reloadNodes(jsonstr, Elements.btnReload[1])
-        
+       
     }
 
 }

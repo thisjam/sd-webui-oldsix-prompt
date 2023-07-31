@@ -8,23 +8,25 @@ def LoadTagsFile():
       current_script = os.path.realpath(__file__)
       current_folder = os.path.dirname(current_script)   
       work_basedir = os.path.dirname(current_folder)   #本插件目录  
-      path = work_basedir+ r"/json"
-      files = os.listdir( path ) 
-      #listjsonpath="extensions/sd-webui-oldsix_prompt/json/"       
+      path1 = work_basedir+ r"/json"
+      path2 = work_basedir+ r"/yours"
       dic={}
-      for item in files:
+      loadjsonfiles(path1,dic)
+      loadjsonfiles(path2,dic)
+      return json.dumps(dic,ensure_ascii=False)
+       
+                             
+ 
+def loadjsonfiles(path,dic):
+    files = os.listdir( path ) 
+    for item in files:
         if item.endswith(".json"):
                 filepath=path+'/'+item
                 filename=filepath[filepath.rindex('/') + 1:-5]
                 with open(filepath, "r",encoding="utf-8-sig") as f:
                         res=json.loads(f.read())                       
                         dic[filename]=res
-                                
- 
-   
-      return json.dumps(dic,ensure_ascii=False)        
-                             
- 
+    
 
  
 class Script(scripts.Script):

@@ -1,8 +1,14 @@
 /cache/*
 /script/__pycache__/*
-/script/__pycache__/
+/script/__pycache__
 /yours/* 
 !/yours/.gitkeep 
 
+*.git*
+*.swp
+*.pyc
+*.idea*
+*__pycache__*
+ 
 
 
