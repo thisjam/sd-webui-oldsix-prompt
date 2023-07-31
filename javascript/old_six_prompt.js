@@ -8,10 +8,13 @@ function loadNodes() {
 
         txtpromt: document.querySelector('#txt2img_prompt textarea'),
         txtnpromt: document.querySelector('#txt2img_neg_prompt textarea'),
+
         imgpromt: document.querySelector('#img2img_prompt textarea'),
         imgnpromt: document.querySelector('#img2img_neg_prompt textarea'),
 
         btnReload:[],
+        btnClearP:[],
+        btnClearNP:[]
         
 
     }
@@ -37,13 +40,45 @@ function addNPrompt(e) {
    
 }
 
-
-function addPrompt(e) {
+function toggleNavCss(dom){
+   let tabrow=dom.parentNode.parentNode.parentNode;
+   let tabnav=tabrow.parentNode.previousSibling;
+   let activebtns=tabrow.querySelectorAll(".oldsix-btn.active")
+   let target= tabnav.children[tabrow.dataset.tabitem]
    
-    let elementprompt =e.target.dataset.pageindex==1 ? Elements.imgpromt : Elements.txtpromt
-    elementprompt.focus(); 
-    document.execCommand('insertText', false, e.target.dataset.sixoldtit + ',')
+   if(activebtns.length){
+    target.classList.add("active")
+   }
+   else{
+    target.classList.remove("active")
+   }
+   
   
+  
+}
+ 
+  
+function addPrompt(e) {
+    let dom=e.target;
+    let str= e.target.dataset.sixoldtit + ','
+    let elementprompt =e.target.dataset.pageindex==1 ? Elements.imgpromt : Elements.txtpromt
+    dom.classList.toggle("active")
+    toggleNavCss(dom)
+    ishas=false;
+    for (const item of dom.classList) {
+        if(item=='active'){     
+            ishas=true
+        }
+    }
+    if(!ishas){
+        elementprompt.focus(); 
+        elementprompt.value=  elementprompt.value.replace(new RegExp(`(${str})`, 'g'), '');
+        return
+    }
+   
+    elementprompt.focus(); 
+    document.execCommand('insertText', false,str)
+   
      
 }
 
@@ -146,6 +181,7 @@ function reloadNodes(jsonstring, btnreloadDom) {
             tabClick(tabbtn)
         })
         let tabitem=CreateEle('div',contentContainer,'tab-item six-hide','')
+        tabitem.dataset.tabitem=count
         let content=CreateEle('div',tabitem,'oldsix-content','')
         if(count==0){
             tabbtn.classList.add('selected')
@@ -161,7 +197,7 @@ function reloadNodes(jsonstring, btnreloadDom) {
 
     tabs.appendChild(tabnav)
     tabs.appendChild(contentContainer)
-    btnreloadDom.parentNode.appendChild(tabs)
+    btnreloadDom.parentNode.parentNode.appendChild(tabs)
 }
 
 
@@ -190,8 +226,67 @@ function move(){
     Elements.img2img.appendChild(Elements.prompt2)
     
 }
+
+function clearPrompt(pageindex){
+   
+     let textarea, container;
+     if(pageindex==0){
+        textarea=Elements.txtpromt;
+        container=Elements.prompt
+     }else{
+        textarea=Elements.imgpromt;
+        container=Elements.prompt2
+     }
+     textarea.value='';
+     let tabs=container.querySelector(".oldsix-tab-nav").children
+     let btns=container.querySelectorAll(".oldsix-btn.active")
+     
+     for (const item of tabs) {
+        item.classList.remove('active')
+     }
+   
+     btns.forEach(btn=>{
+        btn.classList.remove('active')
+     })
+  
+}
+
+function clearNPrompt(pageindex){
+   
+    let textarea=pageindex=='1'?Elements.imgnpromt:Elements.txtnpromt;
+    textarea.value='';
+}
+
+function loadClearbtn(){
+  let btns1= Elements.prompt.querySelectorAll('.oldsix-clear')
+  let btns2= Elements.prompt2.querySelectorAll('.oldsix-clear')
+  btns1.forEach(item=>item.dataset.page='0')
+  btns2.forEach(item=>item.dataset.page='1')
+  Elements.btnClearP.push(btns1[0])
+  Elements.btnClearP.push(btns2[0]) 
+  Elements.btnClearNP.push(btns1[1])
+  Elements.btnClearNP.push(btns2[1])
+
+  Elements.btnClearP.forEach(item=>{
+    item.addEventListener('click',function(e){
+        clearPrompt(item.dataset.page)    
+    })
+  });
+  Elements.btnClearNP.forEach(item=>{
+    item.addEventListener('click',function(e){
+        clearNPrompt(item.dataset.page)    
+    })
+  })
+}
+
+
 onUiLoaded(async => {
     move()
+    
+    loadClearbtn()
+
+
+
     Elements.btnReload= document.querySelectorAll('.oldsix-reload');
     Elements.btnReload.forEach((item,index) => {
         item.dataset.page=index

@@ -37,7 +37,6 @@
     overflow:visible!important
 }
 
- 
 .oldsix-btn:hover::after{
     content: attr(data-sixoldtit);
     position: absolute;
@@ -83,7 +82,42 @@
     display: block;
  }
  
+ #oldsix-optit{
+    display: block;
+     
+ }
+ #oldsix-optit button{
+    margin: 5px;
+ }
  .oldsix-reload{
-    width: 50px !important;
+    width: 50px !important; 
    
+ }
+ .oldsix-clear{
+    width: fit-content!important;
+     
+ }
+
+ .oldsix-btn.active{
+    background-image: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%);
+    color:black;
+ }
+
+ .oldsix-btn.active:hover{
+    background-image: linear-gradient(120deg, #a8d63d 10%, #96e6a1 100%);
+ }
+ .oldsix-tab-nav button{
+     position: relative;
+ }
+ .oldsix-tab-nav button.active::after{
+    position: absolute;
+    content: '';
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-image: linear-gradient(to top, #0ba360 0%, #3cba92 100%);
+    right: 3px;
+    top:50%;
+    transform: translateY(-50%);
  }

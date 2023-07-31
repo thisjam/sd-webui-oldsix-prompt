@@ -1,92 +1,98 @@
 ﻿{
-  "髪色": {
-    "単色": {
-      "黒髪": "black hair",
-      "金髪": "blonde hair",
-      "棕髪": "brown hair",
-      "红髪": "red hair",
-      "粉髪": "pink hair",
-      "蓝髪": "blue hair",
-      "水色髪": "aqua hair",
-      "緑髪": "green hair",
-      "紫髪": "purple hair",
-      "橙髪": "orange hair",
-      "銀髪": "silver hair",
-      "灰髪": "gray hair",
-      "白髪": "white hair"
-    },
-    "多色": {
-      "五颜六色": "multicolored hair",
-      "条纹色": "streaked hair",
-      "渐变色": "gradient hair",
-      "内侧彩发": "colored inner hair",
-      "分色(着重发梢)": "split-color hair"
-    }
-  },
-  "髪型": {
-    "長度": {
-      "极短发": "very short hair",
-      "短发": "short hair",
-      "中等": "medium hair",
-      "长发": "long hair",
-      "超长": "very long hair",
-      "超超长（超过屁股)": "absurdly long hair"
-    },
-    "種類": {
-      "凌乱": "messy hair",
-      "直发": "straight hair",
-      "卷发": "wavy hair",
-      "倒立": "flipped hair",
-      "非対称": "asymmetrical hair"
-    },
-    "马尾": {
-      "马尾": "ponytail",
-      "高马尾": "high ponytail",
-      "低马尾": "low ponytail",
-      "前马尾": "front ponytail",
-      "侧马尾": "side ponytail",
-      "分股马尾": "split ponytail",
-      "折叠马尾": "folded ponytail",
-      "短马尾": "short ponytail"
-    },
-    "双马尾": {
-      "双马尾": "twintails",
-      "低双马尾": "low twintails",
-      "短双马尾": "short twintails",
-      "三尾": "tri tails",
-      "四尾": "quad tails"
-    },
-    "辫子":{
-    "辫子": "braid",
-    "盘辫": "half updo",
-    "一面朝上": "one side up",
-    "两面朝上": "two side up",
-    "多辫": "multi-tied hair",
-    "头顶结": "topknot",
-    "巻毛": "curly hair",
-    "钻孔": "drill hair",
-    "双头螺柱": "twin drills",
-    "发卷儿": "ringlets",
-    "蝴蝶结": "bow-shaped hair",
-    "丸子頭": "hair bun",
-    "带发圈": "hair rings",
-    "脏辫": "dreadlocks"
-  },
-  "刘海": {
-    "平刘海": "blunt bangs",
-    "非対称": "asymmetrical bangs",
-    "遮盖眼睛": "hair over eyes",
-    "遮一只眼睛": "hair over one eye",
-    "分缝的齐刘海": "parted bangs",
-    "齐刘海": "swept bangs",
-    "单竖刘海": "hair between eyes",
-    "头量": "hair intakes",
-    "侧锁（侧面发起来整齐）": "side locks"
-  },
-  "其他": {
-    "发片": "hair flaps",
-    "阿货(日语)": "ahoge",
-    "天线毛": "antenna hair"
-  }
-}
+	"髪色": {
+		"単色": {
+			"黒髪": "black hair",
+			"金髪": "blonde hair",
+			"棕髪": "brown hair",
+			"红髪": "red hair",
+			"粉髪": "pink hair",
+			"蓝髪": "blue hair",
+			"水色髪": "aqua hair",
+			"緑髪": "green hair",
+			"紫髪": "purple hair",
+			"橙髪": "orange hair",
+			"銀髪": "silver hair",
+			"灰髪": "gray hair",
+			"白髪": "white hair"
+		},
+		"多色": {
+			"五颜六色": "multicolored hair",
+			"条纹色": "streaked hair",
+			"渐变色": "gradient hair",
+			"内侧彩发": "colored inner hair",
+			"分色(着重发梢)": "split-color hair"
+		}
+	},
+	"长度种类": {
+		"長度": {
+			"极短发": "very short hair",
+			"短发": "short hair",
+			"中等": "medium hair",
+			"长发": "long hair",
+			"超长": "very long hair",
+			"超超长（超过屁股)": "absurdly long hair"
+		},
+		"種類": {
+			"凌乱": "messy hair",
+			"直发": "straight hair",
+			"卷发": "wavy hair",
+			"倒立": "flipped hair",
+			"非対称": "asymmetrical hair"
+		}
+	},
+	"发型": {
+		"马尾": {
+			"马尾": "ponytail",
+			"高马尾": "high ponytail",
+			"低马尾": "low ponytail",
+			"前马尾": "front ponytail",
+			"侧马尾": "side ponytail",
+			"分股马尾": "split ponytail",
+			"折叠马尾": "folded ponytail",
+			"短马尾": "short ponytail"
+		},
+		"双马尾": {
+			"双马尾": "twintails",
+			"低双马尾": "low twintails",
+			"短双马尾": "short twintails",
+			"三尾": "tri tails",
+			"四尾": "quad tails"
+		},
+		"辫子": {
+			"辫子": "braid",
+			"盘辫": "half updo",
+			"一面朝上": "one side up",
+			"两面朝上": "two side up",
+			"多辫": "multi-tied hair",
+			"头顶结": "topknot",
+			"巻毛": "curly hair",
+			"钻孔": "drill hair",
+			"双头螺柱": "twin drills",
+			"发卷儿": "ringlets",
+			"蝴蝶结": "bow-shaped hair",
+			"丸子頭": "hair bun",
+			"带发圈": "hair rings",
+			"脏辫": "dreadlocks"
+		},
+		"刘海": {
+			"平刘海": "blunt bangs",
+			"非対称": "asymmetrical bangs",
+			"遮盖眼睛": "hair over eyes",
+			"遮一只眼睛": "hair over one eye",
+			"分缝的齐刘海": "parted bangs",
+			"齐刘海": "swept bangs",
+			"单竖刘海": "hair between eyes",
+			"发片": "hair flaps",
+			"头量": "hair intakes",
+			"侧锁（侧面看起来整齐）": "side locks"
+			
+
+		}
+	}
+
+
+
+
+
+
 }

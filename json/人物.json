@@ -50,7 +50,10 @@
     "普通": "medium breasts",
     "巨乳": "large breasts",
     "爆乳": "huge breasts",
-    "下垂": "hanging breasts"
+    "下垂": "hanging breasts",
+    "侧乳":"sideboob",
+    "乳沟":"cleavage",
+   "半露前胸（拉开衣效果）":"unbuttoned clothes"
   },
   "身体部位": {
     "腋窝": "armpits",
@@ -58,12 +61,6 @@
     "肚脐": "navel",
     "屁股": "ass",
     "大腿": "thighs"
-  },
-  "翼": {
-    "翅膀": "wings",
-    "蝠翼": "bat wings",
-    "蝶翼": "butterfly wings",
-    "悪魔翼": "demon wings",
-    "龙翼": "dragon wings"
   }
+  
 }
