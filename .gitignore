@@ -1,5 +1,4 @@
 /cache/*
-/test/*
-/video/*
 /script/__pycache__/*
 /script/__pycache__/
+/yours/*

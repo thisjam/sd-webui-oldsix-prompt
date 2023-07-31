@@ -22,67 +22,54 @@ def LoadTagsFile():
                                 
  
    
-      return dic          
+      return json.dumps(dic,ensure_ascii=False)        
                              
-def traverse_dict(dictionary,deep=0,html=''):
-    index=0
-    for key, value in  dictionary.items():
-        # if(key=='负面提示'):
-        #         pass   
-        if isinstance(value, dict):   
-            if(deep==0):
-                 html+='</div><div class="oldsix-row deep{1}"><button class="oldsix-btn-tit sm primary  gradio-button svelte-1ipelgc">{0}</button>'.format(key,deep)   
-            else:
-                 html+='<div class="oldsix-row deep{1}"><button class="oldsix-btn-tit sm  primary  gradio-button svelte-1ipelgc">{0}</button><div class="sixold-btn-containers">'.format(key,deep)                              
-        #     print(key+str(deep))
-            html= traverse_dict(value,deep+1,html)  
-        else:
-        #     print(key+str(deep), ":", value)      
-            html+='<button class="sm secondary gradio-button svelte-1ipelgc oldsix-btn" data-sixoldtit="{1}" onclick="addPrompt(this,\'{1}\')" >{0}</button>'.format(key,value) 
-            count=len(dictionary)-1         
-            if(index==count):
-                 for i in range(deep):                    
-                    html+='</div>'
-            index+=1
-#     print('next')      
-    return html
+ 
+
  
 class Script(scripts.Script):
-              
-        def title(self):
-                return "Old_Six"
-     
-        def show(self, is_img2img):
-                return scripts.AlwaysVisible
         
        
+        json= LoadTagsFile()
         
-        def after_component(self, component, **kwargs):   
-           aa=component
-           bb=kwargs
-           pass
+                            
+        def title(self):
+                return "Old_Six"
+               
+        def show(self, is_img2img):
+                return scripts.AlwaysVisible
+          
+      
+              
+        # def createTabs(self):
+        #       with gr.Tabs() as tabs:                                     
+        #             for item in self.diclist:
+        #                 with gr.TabItem(item):                                      
+        #                         html=traverse_dict(self.diclist[item])[6:]                                                                           
+        #                         gr.HTML(html)                         
+        #       return tabs                   
+    
            
         def ui(self, is_img2img):
-            eid=None  
-            tabid=None  
             if(is_img2img):
-                 eid='oldsix-prompt2'
-                 tabid='oldsix-tab1'
+                eid='oldsix-prompt2'
+                tid='oldsix-area2'
             else:
-                 eid='oldsix-prompt1'    
-                 tabid='oldsix-tab2'    
-            diclist=LoadTagsFile()   
-         
+                eid='oldsix-prompt1'     
+                tid='oldsix-area1'           
             with gr.Row(elem_id=eid):
                        with gr.Accordion(label="SixGod_K提示词",open=False):
-                            #  oldsix_checkbox=gr.Checkbox(label="负面框输入", value=False) 
-                            #  btnreload=gr.Button('🔄', variant='secondary',elem_classes="oldsix-reload")
-                             with gr.Tabs(elem_id=tabid):                                     
-                                for item in diclist:
-                                    with gr.TabItem(item, elem_id=item):                                      
-                                            html=traverse_dict(diclist[item])[6:]                                                                           
-                                            gr.HTML(html)                                                                                             
-            return None
+                             textarea=gr.TextArea(self.json,elem_id=tid,visible=False)
+                             btnreload=gr.Button('🔄',elem_classes="oldsix-reload sm secondary gradio-button svelte-1ipelgc")
+                            
+                 
+            def reloadData():
+                return LoadTagsFile()
+            btnreload.click(fn=reloadData,inputs=None,outputs=textarea)    
+          
+     
+                                                                                                                        
+            return [btnreload]
     
         
       

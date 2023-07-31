@@ -9,6 +9,7 @@
 
 .oldsix-btn-tit {
     width: 100%;
+    margin-bottom:5px !important
 }
 
 .oldsix-row {
@@ -74,4 +75,15 @@
   }
   
 
+  .six-hide{
+     display: none;
+  }
+  
+  .six-show{
+    display: block;
+ }
  
+ .oldsix-reload{
+    width: 50px !important;
+   
+ }
