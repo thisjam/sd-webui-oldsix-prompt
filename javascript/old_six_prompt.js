@@ -40,20 +40,36 @@ function addNPrompt(e) {
    
 }
 
-function toggleNavCss(dom){
-   let tabrow=dom.parentNode.parentNode.parentNode;
-   let tabnav=tabrow.parentNode.previousSibling;
-   let activebtns=tabrow.querySelectorAll(".oldsix-btn.active")
-   let target= tabnav.children[tabrow.dataset.tabitem]
-   
-   if(activebtns.length){
-    target.classList.add("active")
-   }
-   else{
-    target.classList.remove("active")
-   }
-   
+
+function getParentBycss(obj,css) {
+    let parent=obj
+    for (let i = 0; i < 10; i++) {
+        parent=parent.parentNode
+        if(parent.classList.contains(css)){
+            return parent
+        }
+    }
+    return null
+}
   
+
+
+function toggleNavCss(dom){
+
+    let tabrow = getParentBycss(dom, 'tab-item')
+
+    let tabnav = tabrow.parentNode.previousSibling;
+    let activebtns = tabrow.querySelectorAll(".oldsix-btn.active")
+    let target = tabnav.children[tabrow.dataset.tabitem]
+
+    if (activebtns.length) {
+        target.classList.add("active")
+    }
+    else {
+        target.classList.remove("active")
+    }
+
+
   
 }
  
