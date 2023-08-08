@@ -42,30 +42,14 @@ class Script(scripts.Script):
         rdlist=loadRandomList()
         json= LoadTagsFile()
         randomIndex=0
-        txtprompt=None
+        
                             
         def title(self):
                 return "Old_Six"
                
         def show(self, is_img2img):
                 return scripts.AlwaysVisible
-          
-      
-              
-        # def createTabs(self):
-        #       with gr.Tabs() as tabs:                                     
-        #             for item in self.diclist:
-        #                 with gr.TabItem(item):                                      
-        #                         html=traverse_dict(self.diclist[item])[6:]                                                                           
-        #                         gr.HTML(html)                         
-        #       return tabs                   
-        
-        def after_component(self, component, **kwargs):
-           if(component.elem_id=="txt2img_prompt" or component.elem_id=="img2img_prompt"):
-               self.txtprompt=component
-            #    print(component,component.elem_id)
-              
-           
+       
         def ui(self, is_img2img):
             if(is_img2img):
                 eid='oldsix-prompt2'
@@ -80,28 +64,35 @@ class Script(scripts.Script):
                                 btnreload=gr.Button('🔄',elem_classes="oldsix-reload sm secondary gradio-button svelte-1ipelgc")
                                 gr.Button('清空正面提示词', variant="secondary",elem_classes="oldsix-clear")
                                 gr.Button('清空负面提示词',variant="secondary",elem_classes="oldsix-clear")
-                             with gr.Accordion(label="随机灵感",open=False):
-                                rdtextarea=gr.TextArea(label='灵感词预览框')
+                             with gr.Column(scale=4,elem_id="oldsix-optit"):
+                                  gr.HTML('<p class="oldsix-classes-shop"></p>')  
+                             with gr.Accordion(label="随机灵感",open=False):                               
+                                rdtextareaEn=gr.TextArea(label='英文预览框',elem_id='randomTextEn',lines=3,visible=False)
+                                rdtextareaZh=gr.TextArea(label='预览框',elem_id='randomTextZh',lines=3)     
+                                with gr.Row():       
+                                     with gr.Column(scale=4):                    
+                                        gr.Textbox(placeholder='开头占位提示词',show_label=False,elem_classes="oldsix-txt-start")
+                                     with gr.Column(scale=4):     
+                                        gr.Textbox(placeholder='结尾占位提示词',show_label=False,elem_classes="oldsix-txt-end")
                                 with gr.Row():
                                     with gr.Column(scale=4):
-                                        btnRandom=gr.Button('随机灵感关键词',variant="primary")                              
+                                        btnRandom=gr.Button('随机灵感关键词',variant="primary")                                                               
                                     with gr.Column(scale=4):  
-                                        btnSend=gr.Button('发送到提示词框',variant="primary")
+                                         gr.Button('分类组合随机',variant="primary",elem_classes="btn-crandom") 
+                                    with gr.Column(scale=4):  
+                                         gr.Button('发送到提示词框',variant="primary",elem_classes="oldsix-btnSend")   
             
-            def send():                                  
-                return self.rdlist[self.randomIndex]['val']        
-            
+                    
             def randomPrompt():     
                 self.randomIndex= random.randint(0,len(self.rdlist))
-                return self.rdlist[self.randomIndex]['key']    
-            
+                return [self.rdlist[self.randomIndex]['val'],self.rdlist[self.randomIndex]['key']]            
             def reloadData():
                 return LoadTagsFile()
                  
       
             btnreload.click(fn=reloadData,inputs=None,outputs=textarea)  
-            btnRandom.click(fn=randomPrompt,inputs=None,outputs=rdtextarea)      
-            btnSend.click(fn=send,inputs=None,outputs=self.txtprompt)  
+            btnRandom.click(fn=randomPrompt,inputs=None,outputs=[rdtextareaEn,rdtextareaZh])      
+        
      
                                                                                                                         
             return [btnreload]
