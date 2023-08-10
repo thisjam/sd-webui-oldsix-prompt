@@ -32,6 +32,7 @@ let dicClass={
    1:{}
 }   
 
+const loadTime=3000
  
  
   
@@ -91,7 +92,8 @@ function toggleNavCss(dom){
   
 function addPrompt(e) {
     let dom=e.target;
-    let str= e.target.dataset.sixoldtit + ','
+    let str= e.target.dataset.sixoldtit
+    
     let elementprompt =e.target.dataset.pageindex==1 ? Elements.imgpromt : Elements.txtpromt
     dom.classList.toggle("active")
     toggleNavCss(dom)
@@ -102,11 +104,21 @@ function addPrompt(e) {
         }
     }
     if(!ishas){
-        elementprompt.focus();     
-        elementprompt.value= elementprompt.value.replace(str,'');
+          
+        if(elementprompt.value.includes(str+':')){
+            const teststr=`${str},|\\(${str}:\\d+\\.\\d+\\),`
+            const regex =new RegExp(teststr);    
+            console.log(regex.test(elementprompt.value));       
+            elementprompt.value= elementprompt.value.replace(regex,'');
+             
+        }
+        else{
+            elementprompt.value= elementprompt.value.replace(str+',','');
+            
+        }
         return
     }
-   
+    str=str+','
     elementprompt.focus(); 
     document.execCommand('insertText', false,str)
    
@@ -118,7 +130,7 @@ function addPrompt(e) {
 
 async function getJsonStr() {
   
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    await new Promise(resolve => setTimeout(resolve, loadTime));
     
     let val1 = document.querySelector("#oldsix-area1 textarea").value
     let val2 = document.querySelector("#oldsix-area2 textarea").value
@@ -399,7 +411,12 @@ onUiLoaded(async => {
     Elements.btnSends.forEach((item,index) => { 
         item.addEventListener('click', () => {  
             let elementprompt=index==1 ? Elements.imgpromt : Elements.txtpromt
-            elementprompt.value=Elements.RdtxtAreasEn[index].value
+            elementprompt.value=''
+            elementprompt.focus(); 
+            let str=Elements.RdtxtAreasEn[index].value
+            // console.log(str);
+            // document.execCommand('selectAll', false);
+            document.execCommand('insertText', false,str);   
         })
     })
 
