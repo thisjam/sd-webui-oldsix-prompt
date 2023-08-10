@@ -11,15 +11,31 @@ function loadNodes() {
 
         imgpromt: document.querySelector('#img2img_prompt textarea'),
         imgnpromt: document.querySelector('#img2img_neg_prompt textarea'),
-
+        RdtxtAreasEn:document.querySelectorAll('#randomTextEn textarea'),
+        RdtxtAreasZh:document.querySelectorAll('#randomTextZh textarea'),
+        btnSends:document.querySelectorAll('.oldsix-btnSend'),
+        txtStart:document.querySelectorAll('.oldsix-txt-start textarea'),
+        txtEnd:document.querySelectorAll('.oldsix-txt-end textarea'),
         btnReload:[],
         btnClearP:[],
-        btnClearNP:[]
+        btnClearNP:[],
+        pClasses:[],
+        
         
 
     }
     return Elements
 }
+
+let dicClass={
+   0:{},
+   1:{}
+}   
+
+const loadTime=3000
+ 
+ 
+  
 
 function getEle(key) {
     return gradioApp().querySelector(key)
@@ -33,11 +49,49 @@ function CreateEle(type,parentDom,css,html){
     return dom
  }
  
+ function addPrompt(e) {
+    let dom=e.target;
+    let str= e.target.dataset.sixoldtit
+    
+    let elementprompt =e.target.dataset.pageindex==1 ? Elements.imgpromt : Elements.txtpromt
+    dom.classList.toggle("active")
+    toggleNavCss(dom)
+    ishas=false;
+    for (const item of dom.classList) {
+        if(item=='active'){     
+            ishas=true
+        }
+    }
+    if(!ishas){
+          
+        if(elementprompt.value.includes(str+':')){
+            const teststr=`${str},|\\(${str}:\\d+\\.\\d+\\),`
+            const regex =new RegExp(teststr);    
+            console.log(regex.test(elementprompt.value));       
+            elementprompt.value= elementprompt.value.replace(regex,'');
+             
+        }
+        else{
+            elementprompt.value= elementprompt.value.replace(str+',','');       
+        }
+        return
+    }
+   
+    InserttextToTextArea(elementprompt,str)
+     
+}
+
+
 function addNPrompt(e) {
-    let elementprompt = e.target.dataset.pageindex==1 ? Elements.imgnpromt : Elements.txtnpromt
+    let elementprompt = e.target.dataset.pageindex==1 ? Elements.imgnpromt : Elements.txtnpromt   
     elementprompt.focus();
     document.execCommand('insertText', false, e.target.dataset.sixoldtit + ',')
    
+}
+
+function InserttextToTextArea(inputelem,val){ 
+    inputelem.value+=val+','
+    updateInput(inputelem)
 }
 
 
@@ -74,36 +128,13 @@ function toggleNavCss(dom){
 }
  
   
-function addPrompt(e) {
-    let dom=e.target;
-    let str= e.target.dataset.sixoldtit + ','
-    let elementprompt =e.target.dataset.pageindex==1 ? Elements.imgpromt : Elements.txtpromt
-    dom.classList.toggle("active")
-    toggleNavCss(dom)
-    ishas=false;
-    for (const item of dom.classList) {
-        if(item=='active'){     
-            ishas=true
-        }
-    }
-    if(!ishas){
-        elementprompt.focus(); 
-        elementprompt.value=  elementprompt.value.replace(new RegExp(`(${str})`, 'g'), '');
-        return
-    }
-   
-    elementprompt.focus(); 
-    document.execCommand('insertText', false,str)
-   
-     
-}
 
 
 
 
 async function getJsonStr() {
   
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    await new Promise(resolve => setTimeout(resolve, loadTime));
     
     let val1 = document.querySelector("#oldsix-area1 textarea").value
     let val2 = document.querySelector("#oldsix-area2 textarea").value
@@ -115,17 +146,59 @@ function clearTextarea(){
    document.querySelector("#oldsix-area2 textarea").value='area2'
 }
 
-function createBtnTitle(name,parent){
+function createBtnTitle(name,val,parent,pageindex){
+  
    let div=document.createElement('div')
    let btn=document.createElement('button')
    setCss(div,'oldsix-row ')
    setCss(btn,'oldsix-btn-tit sm primary gradio-button svelte-1ipelgc')
    btn.innerHTML=name
-
    div.appendChild(btn)
    parent.appendChild(div)
+   for (const key in val) {
+       if (typeof val[key] != 'object' )
+           btn.addEventListener('click', function () {
+            addDicClasses(name,val,pageindex)
+           })
+           return div
+       } 
+   
    return div
 }
+
+
+function addDicClasses(key,val,pageindex)
+{
+    if(dicClass[pageindex][key]){
+        return
+    }
+    let list=[]
+    for (const key in val) {
+        list.push({'key':key,'val':val[key]})
+    }
+    dicClass[pageindex][key]=list
+    CreateClassesBtn(key,pageindex)
+}
+
+function CreateClassesBtn(btnName,pageindex)
+{ 
+   let btn=document.createElement('button')
+   setCss(btn,'sm secondary gradio-button svelte-1ipelgc')
+   btn.innerHTML=btnName
+   Elements.pClasses[pageindex].appendChild(btn);
+   btn.addEventListener('click',function(){
+       btn.parentElement.removeChild(btn)
+       Reflect.deleteProperty(dicClass[pageindex], btnName);
+   
+   })
+
+    
+}
+
+
+
+ 
+
 
 function createBtnPrompt(key,val,parent,pageindex){ 
     let btn=document.createElement('button')
@@ -146,12 +219,14 @@ function createBtnPrompt(key,val,parent,pageindex){
     return btn
  }
  
+
+
  
 function traverse(obj,parent,pageindex) {
     for (var key in obj) {     
         if (obj.hasOwnProperty(key)) {
             if (typeof obj[key] === 'object' && obj[key] !== null) {
-                let resdom= createBtnTitle(key,parent)
+                let resdom= createBtnTitle(key, obj[key],parent,pageindex)
                 traverse(obj[key],resdom,pageindex);           
             } else {     
                 createBtnPrompt(key,obj[key],parent,pageindex)
@@ -210,20 +285,19 @@ function reloadNodes(jsonstring, btnreloadDom) {
     setCss(tabs, 'oldsix-tabs gradio-tabs svelte-1g805jl')
     setCss(tabnav, 'oldsix-tab-nav scroll-hide svelte-1g805jl')
     setCss(contentContainer, 'tab-container')
-
+     
     tabs.appendChild(tabnav)
     tabs.appendChild(contentContainer)
     btnreloadDom.parentNode.parentNode.appendChild(tabs)
+    
 }
 
 
 async function loadCustomUI(){
     let jsonstr= await getJsonStr()        
-    if (jsonstr) {
-        
+    if (jsonstr) { 
         reloadNodes(jsonstr, Elements.btnReload[0])
-        reloadNodes(jsonstr, Elements.btnReload[1])
-       
+        reloadNodes(jsonstr, Elements.btnReload[1])    
     }
 
 }
@@ -296,14 +370,43 @@ function loadClearbtn(){
 }
 
 
+function ranDomPropt(pageindex){ 
+    let texten=''
+    let textzh=''
+    for (const key in dicClass[pageindex]) {
+        let listcount=dicClass[pageindex][key].length
+        let rdindex=GetRandomNum(listcount)
+        let rdtarget=dicClass[pageindex][key][rdindex]
+        texten+=rdtarget.val+','
+        textzh+=rdtarget.key+','
+    }  
+    Elements.RdtxtAreasZh[pageindex].value=textzh
+    Elements.RdtxtAreasEn[pageindex].value=Elements.txtStart[pageindex].value+texten+Elements.txtEnd[pageindex].value
+    
+  
+}
+
+ 
+ 
+function GetRandomNum(Max) {
+   return Math.floor(Math.random() * Max);
+} 
+
 onUiLoaded(async => {
     move()
     
     loadClearbtn()
-
-
-
+    
+    Elements.pClasses=document.querySelectorAll('.oldsix-classes-shop')
     Elements.btnReload= document.querySelectorAll('.oldsix-reload');
+    Elements.btnRandoms= document.querySelectorAll('.btn-crandom');
+
+    Elements.btnRandoms.forEach((item,index) => {     
+        item.addEventListener('click', () => {  
+            ranDomPropt(index)               
+        })
+    })
+
     Elements.btnReload.forEach((item,index) => {
         item.dataset.page=index
         item.addEventListener('click', () => {  
@@ -311,9 +414,25 @@ onUiLoaded(async => {
         })
     })
 
+    Elements.btnSends.forEach((item,index) => { 
+        item.addEventListener('click', () => {  
+            let elementprompt=index==1 ? Elements.imgpromt : Elements.txtpromt
+            elementprompt.value=''
+            elementprompt.focus(); 
+            let str=Elements.RdtxtAreasEn[index].value
+            document.execCommand('insertText', false,str);   
+        })
+    })
+
+   
     loadCustomUI() 
+    
+ 
 
 })
+
+
+
 
 
 
