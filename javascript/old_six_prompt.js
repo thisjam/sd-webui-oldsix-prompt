@@ -49,11 +49,49 @@ function CreateEle(type,parentDom,css,html){
     return dom
  }
  
+ function addPrompt(e) {
+    let dom=e.target;
+    let str= e.target.dataset.sixoldtit
+    
+    let elementprompt =e.target.dataset.pageindex==1 ? Elements.imgpromt : Elements.txtpromt
+    dom.classList.toggle("active")
+    toggleNavCss(dom)
+    ishas=false;
+    for (const item of dom.classList) {
+        if(item=='active'){     
+            ishas=true
+        }
+    }
+    if(!ishas){
+          
+        if(elementprompt.value.includes(str+':')){
+            const teststr=`${str},|\\(${str}:\\d+\\.\\d+\\),`
+            const regex =new RegExp(teststr);    
+            console.log(regex.test(elementprompt.value));       
+            elementprompt.value= elementprompt.value.replace(regex,'');
+             
+        }
+        else{
+            elementprompt.value= elementprompt.value.replace(str+',','');       
+        }
+        return
+    }
+   
+    InserttextToTextArea(elementprompt,str)
+     
+}
+
+
 function addNPrompt(e) {
-    let elementprompt = e.target.dataset.pageindex==1 ? Elements.imgnpromt : Elements.txtnpromt
+    let elementprompt = e.target.dataset.pageindex==1 ? Elements.imgnpromt : Elements.txtnpromt   
     elementprompt.focus();
     document.execCommand('insertText', false, e.target.dataset.sixoldtit + ',')
    
+}
+
+function InserttextToTextArea(inputelem,val){ 
+    inputelem.value+=val+','
+    updateInput(inputelem)
 }
 
 
@@ -90,40 +128,6 @@ function toggleNavCss(dom){
 }
  
   
-function addPrompt(e) {
-    let dom=e.target;
-    let str= e.target.dataset.sixoldtit
-    
-    let elementprompt =e.target.dataset.pageindex==1 ? Elements.imgpromt : Elements.txtpromt
-    dom.classList.toggle("active")
-    toggleNavCss(dom)
-    ishas=false;
-    for (const item of dom.classList) {
-        if(item=='active'){     
-            ishas=true
-        }
-    }
-    if(!ishas){
-          
-        if(elementprompt.value.includes(str+':')){
-            const teststr=`${str},|\\(${str}:\\d+\\.\\d+\\),`
-            const regex =new RegExp(teststr);    
-            console.log(regex.test(elementprompt.value));       
-            elementprompt.value= elementprompt.value.replace(regex,'');
-             
-        }
-        else{
-            elementprompt.value= elementprompt.value.replace(str+',','');
-            
-        }
-        return
-    }
-    str=str+','
-    elementprompt.focus(); 
-    document.execCommand('insertText', false,str)
-   
-     
-}
 
 
 
@@ -416,8 +420,6 @@ onUiLoaded(async => {
             elementprompt.value=''
             elementprompt.focus(); 
             let str=Elements.RdtxtAreasEn[index].value
-            // console.log(str);
-            // document.execCommand('selectAll', false);
             document.execCommand('insertText', false,str);   
         })
     })
@@ -425,9 +427,12 @@ onUiLoaded(async => {
    
     loadCustomUI() 
     
-     
+ 
 
 })
+
+
+
 
 
 

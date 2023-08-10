@@ -42,7 +42,11 @@ class Script(scripts.Script):
         rdlist=loadRandomList()
         json= LoadTagsFile()
         randomIndex=0
+        txtprompt=None
         
+        def after_component(self, component, **kwargs):
+           if(component.elem_id=="txt2img_prompt" or component.elem_id=="img2img_prompt"):
+               self.txtprompt=component
                             
         def title(self):
                 return "Old_Six"
@@ -97,7 +101,8 @@ class Script(scripts.Script):
                                                                                                                         
             return [btnreload]
     
-       
+        # def process(self, p, *args):
+        #   pass
         
                 
  
