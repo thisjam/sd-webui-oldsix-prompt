@@ -165,12 +165,14 @@ function createBtnTitle(name,val,parent,pageindex){
 
 function addDicClasses(key,val,pageindex)
 {
+    if(dicClass[pageindex][key]){
+        return
+    }
     let list=[]
     for (const key in val) {
         list.push({'key':key,'val':val[key]})
     }
     dicClass[pageindex][key]=list
-    console.log(dicClass);
     CreateClassesBtn(key,pageindex)
 }
 
