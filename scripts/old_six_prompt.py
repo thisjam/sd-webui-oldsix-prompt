@@ -19,7 +19,8 @@ def LoadTagsFile():
  
 def loadjsonfiles(path,dic):
     files = os.listdir( path ) 
-    for item in files:
+    sorted_files = sorted(files)
+    for item in sorted_files:
         if item.endswith(".json"):
                 filepath=path+'/'+item
                 filename=filepath[filepath.rindex('/') + 1:-5]
@@ -99,9 +100,7 @@ class Script(scripts.Script):
       
             btnreload.click(fn=reloadData,inputs=None,outputs=textarea)  
             btnRandom.click(fn=randomPrompt,inputs=None,outputs=[rdtextareaEn,rdtextareaZh])      
-        
-     
-                                                                                                                        
+                                                                                                                    
             return [btnreload]
     
         def process(self, p, *args):                  

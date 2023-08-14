@@ -32,10 +32,9 @@ let dicClass={
    1:{}
 }   
 
-const loadTime=3000
+const loadTime=1500
  
  
-  
 
 function getEle(key) {
     return gradioApp().querySelector(key)
@@ -134,16 +133,19 @@ function toggleNavCss(dom){
 
 async function getJsonStr() {
   
-    await new Promise(resolve => setTimeout(resolve, loadTime));
-    
+    await new Promise(resolve => setTimeout(resolve, loadTime));  
     let val1 = document.querySelector("#oldsix-area1 textarea").value
     let val2 = document.querySelector("#oldsix-area2 textarea").value
     return val1||val2
 }
 
 function clearTextarea(){
-   document.querySelector("#oldsix-area1 textarea").value='area1'
-   document.querySelector("#oldsix-area2 textarea").value='area2'
+   let elarea1= document.querySelector("#oldsix-area1 textarea")
+   let elarea2= document.querySelector("#oldsix-area2 textarea")
+   elarea1.value=''
+   elarea2.value=''
+   updateInput(elarea1)
+   updateInput(elarea2)
 }
 
 function createBtnTitle(name,val,parent,pageindex){
@@ -193,7 +195,7 @@ function addDynamicToTextArea(btnele,pageindex){
 
 function addDicClasses(key,val,pageindex)
 {
-    if(dicClass[pageindex][key]){
+    if(dicClass[pageindex][key]){    
         return
     }
     let list=[]
@@ -322,7 +324,8 @@ async function loadCustomUI(){
     let jsonstr= await getJsonStr()        
     if (jsonstr) {     
             reloadNodes(jsonstr, Elements.btnReload[0])
-            reloadNodes(jsonstr, Elements.btnReload[1])        
+            reloadNodes(jsonstr, Elements.btnReload[1])  
+            clearTextarea()      
     }
 
 }
@@ -395,7 +398,12 @@ function loadClearbtn(){
 }
 
 
-function ranDomPropt(pageindex){ 
+function ranDomPropt(pageindex){   
+    if(JSON.stringify(dicClass[pageindex]) == "{}"){
+        
+        alert('请先添加分类')
+        return
+    }
     let texten=''
     let textzh=''
     for (const key in dicClass[pageindex]) {
