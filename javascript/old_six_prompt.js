@@ -32,10 +32,9 @@ let dicClass={
    1:{}
 }   
 
-const loadTime=3000
+const loadTime=1500
  
  
-  
 
 function getEle(key) {
     return gradioApp().querySelector(key)
@@ -134,16 +133,19 @@ function toggleNavCss(dom){
 
 async function getJsonStr() {
   
-    await new Promise(resolve => setTimeout(resolve, loadTime));
-    
+    await new Promise(resolve => setTimeout(resolve, loadTime));  
     let val1 = document.querySelector("#oldsix-area1 textarea").value
     let val2 = document.querySelector("#oldsix-area2 textarea").value
     return val1||val2
 }
 
 function clearTextarea(){
-   document.querySelector("#oldsix-area1 textarea").value='area1'
-   document.querySelector("#oldsix-area2 textarea").value='area2'
+   let elarea1= document.querySelector("#oldsix-area1 textarea")
+   let elarea2= document.querySelector("#oldsix-area2 textarea")
+   elarea1.value=''
+   elarea2.value=''
+   updateInput(elarea1)
+   updateInput(elarea2)
 }
 
 function createBtnTitle(name,val,parent,pageindex){
@@ -158,8 +160,13 @@ function createBtnTitle(name,val,parent,pageindex){
    for (const key in val) {
        if (typeof val[key] != 'object' )
            btn.addEventListener('click', function () {
-            addDicClasses(name,val,pageindex)
-           })
+               addDicClasses(name, val, pageindex)
+           });
+            btn.addEventListener('contextmenu', function (e) {
+                e.preventDefault();
+                addDynamicToTextArea(btn,pageindex)
+                
+            })
            return div
        } 
    
@@ -167,9 +174,28 @@ function createBtnTitle(name,val,parent,pageindex){
 }
 
 
+function addDynamicToTextArea(btnele,pageindex){
+    let btns= btnele.parentNode.querySelectorAll('.oldsix-btn') 
+    if(btns.length){
+        let text='#[' 
+        for (let index = 0; index < btns.length; index++) {
+            text+=btns[index].dataset.sixoldtit
+            if(index<btns.length-1){
+                text+=','
+            }
+            
+        }
+        text+=']';
+        let elementprompt =pageindex==1 ? Elements.imgpromt : Elements.txtpromt
+        InserttextToTextArea(elementprompt,text)
+
+    } 
+
+}
+
 function addDicClasses(key,val,pageindex)
 {
-    if(dicClass[pageindex][key]){
+    if(dicClass[pageindex][key]){    
         return
     }
     let list=[]
@@ -207,14 +233,14 @@ function createBtnPrompt(key,val,parent,pageindex){
     btn.dataset.sixoldtit=val
     btn.dataset.pageindex=pageindex
     parent.appendChild(btn)
-    btn.addEventListener('click',function(e){    
-      
+    btn.addEventListener('click',function(e){     
         addPrompt(e)
     })
     btn.addEventListener('contextmenu', function (e) {
         e.preventDefault();
         addNPrompt(e)
     })
+
     
     return btn
  }
@@ -260,7 +286,8 @@ function tabClick(self){
 
 }
 function reloadNodes(jsonstring, btnreloadDom) {
-    let jsonObj = JSON.parse(jsonstring)
+   
+    let jsonObj = JSON.parse(jsonstring)       
     let tabs = document.createElement('div')
     let tabnav = document.createElement('div')
     let contentContainer=document.createElement('div')
@@ -295,9 +322,10 @@ function reloadNodes(jsonstring, btnreloadDom) {
 
 async function loadCustomUI(){
     let jsonstr= await getJsonStr()        
-    if (jsonstr) { 
-        reloadNodes(jsonstr, Elements.btnReload[0])
-        reloadNodes(jsonstr, Elements.btnReload[1])    
+    if (jsonstr) {     
+            reloadNodes(jsonstr, Elements.btnReload[0])
+            reloadNodes(jsonstr, Elements.btnReload[1])  
+            clearTextarea()      
     }
 
 }
@@ -370,7 +398,12 @@ function loadClearbtn(){
 }
 
 
-function ranDomPropt(pageindex){ 
+function ranDomPropt(pageindex){   
+    if(JSON.stringify(dicClass[pageindex]) == "{}"){
+        
+        alert('请先添加分类')
+        return
+    }
     let texten=''
     let textzh=''
     for (const key in dicClass[pageindex]) {
@@ -381,7 +414,7 @@ function ranDomPropt(pageindex){
         textzh+=rdtarget.key+','
     }  
     Elements.RdtxtAreasZh[pageindex].value=textzh
-    Elements.RdtxtAreasEn[pageindex].value=Elements.txtStart[pageindex].value+texten+Elements.txtEnd[pageindex].value
+    Elements.RdtxtAreasEn[pageindex].value=texten
     
   
 }
@@ -404,7 +437,7 @@ onUiLoaded(async => {
     Elements.btnRandoms.forEach((item,index) => {     
         item.addEventListener('click', () => {  
             ranDomPropt(index)               
-        })
+        })   
     })
 
     Elements.btnReload.forEach((item,index) => {
@@ -420,6 +453,7 @@ onUiLoaded(async => {
             elementprompt.value=''
             elementprompt.focus(); 
             let str=Elements.RdtxtAreasEn[index].value
+            str=Elements.txtStart[index].value+str+Elements.txtEnd[index].value
             document.execCommand('insertText', false,str);   
         })
     })
