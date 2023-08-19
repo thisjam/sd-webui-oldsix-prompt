@@ -6,16 +6,16 @@ function loadNodes() {
         txt2img: getEle("#txt2img_prompt_container"),
         img2img: getEle("#img2img_prompt_container"),
 
-        txtpromt: document.querySelector('#txt2img_prompt textarea'),
-        txtnpromt: document.querySelector('#txt2img_neg_prompt textarea'),
+        txtpromt: getEle('#txt2img_prompt textarea'),
+        txtnpromt: getEle('#txt2img_neg_prompt textarea'),
 
-        imgpromt: document.querySelector('#img2img_prompt textarea'),
-        imgnpromt: document.querySelector('#img2img_neg_prompt textarea'),
-        RdtxtAreasEn:document.querySelectorAll('#randomTextEn textarea'),
-        RdtxtAreasZh:document.querySelectorAll('#randomTextZh textarea'),
-        btnSends:document.querySelectorAll('.oldsix-btnSend'),
-        txtStart:document.querySelectorAll('.oldsix-txt-start textarea'),
-        txtEnd:document.querySelectorAll('.oldsix-txt-end textarea'),
+        imgpromt: getEle('#img2img_prompt textarea'),
+        imgnpromt: getEle('#img2img_neg_prompt textarea'),
+        RdtxtAreasEn:getEleAll('#randomTextEn textarea'),
+        RdtxtAreasZh:getEleAll('#randomTextZh textarea'),
+        btnSends:getEleAll('.oldsix-btnSend'),
+        txtStart:getEleAll('.oldsix-txt-start textarea'),
+        txtEnd:getEleAll('.oldsix-txt-end textarea'),
         
         btnReload:[],
         btnClearP:[],
@@ -41,6 +41,9 @@ const loadTime=3000
 
 function getEle(key) {
     return gradioApp().querySelector(key)
+}
+function getEleAll(key) {
+    return gradioApp().querySelectorAll(key)
 }
 
 function CreateEle(type,parentDom,css,html){
@@ -137,7 +140,7 @@ function toggleNavCss(dom){
 
 async function getJsonStr() {
   
-    await new Promise(resolve => setTimeout(resolve, loadTime));
+    await new Promise(resolve => setTimeout(resolve, 1500));
     
     let val1 = document.querySelector("#oldsix-area1 textarea").value
     let val2 = document.querySelector("#oldsix-area2 textarea").value
@@ -476,17 +479,19 @@ function initBtnsEvent(){
     
 }
 
-onUiLoaded(()=> {
-    move()
-    
-    loadClearbtn()  
-   
-    initBtnsEvent()
-   
-    loadCustomUI() 
  
 
+onUiLoaded(()=> {
+
+    initData()
 })
+
+function initData(){
+    move()   
+    loadClearbtn()    
+    initBtnsEvent() 
+    loadCustomUI() 
+}
 
 
 
