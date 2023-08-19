@@ -11,16 +11,19 @@ work_basedir = os.path.dirname(current_folder)   #本插件目录
 path1 = work_basedir+ r"/json"
 path2 = work_basedir+ r"/yours"
 pathrandom = work_basedir+ r"/random"
+listdynamice={}
 def LoadTagsFile():    
       dic={}
       loadjsonfiles(path1,dic)
       loadjsonfiles(path2,dic)
-      return json.dumps(dic,ensure_ascii=False)                            
+      traverse_dict(dic)
+      obj=json.dumps(dic,ensure_ascii=False)       
+     
+      return   obj                   
  
 def loadjsonfiles(path,dic):
     files = os.listdir( path ) 
-    sorted_files = sorted(files)
-    for item in sorted_files:
+    for item in files:
         if item.endswith(".json"):
                 filepath=path+'/'+item
                 filename=filepath[filepath.rindex('/') + 1:-5]
@@ -37,7 +40,19 @@ def loadRandomList():
                 with open(filepath, "r",encoding="utf-8-sig") as f:
                         jsonlist=json.loads(f.read())                       
                 return jsonlist
-    
+
+def traverse_dict(d,clsName=None):      
+        for k, v in d.items():     
+            if  isinstance (v, dict):             
+                traverse_dict(v,k)
+            else:
+                listdynamice[clsName]=d
+                break
+              
+            
+        
+                    
+     
  
 class Script(scripts.Script):
         
@@ -64,8 +79,9 @@ class Script(scripts.Script):
                 eid='oldsix-prompt1'     
                 tid='oldsix-area1'           
             with gr.Row(elem_id=eid):
-                       with gr.Accordion(label="SixGod_K提示词 v1.31",open=False):
+                       with gr.Accordion(label="SixGod_K提示词 v1.32",open=False):
                              textarea=gr.TextArea(self.json,elem_id=tid,visible=False)
+                           
                              with gr.Column(scale=4,elem_id="oldsix-optit"):
                                 btnreload=gr.Button('🔄',elem_classes="oldsix-reload sm secondary gradio-button svelte-1ipelgc")
                                 gr.Button('清空正面提示词', variant="secondary",elem_classes="oldsix-clear")
@@ -99,32 +115,44 @@ class Script(scripts.Script):
                  
       
             btnreload.click(fn=reloadData,inputs=None,outputs=textarea)  
-            btnRandom.click(fn=randomPrompt,inputs=None,outputs=[rdtextareaEn,rdtextareaZh])      
-                                                                                                                    
+            btnRandom.click(fn=randomPrompt,inputs=None,outputs=[rdtextareaEn,rdtextareaZh])                                                                                                                 
             return [btnreload]
-    
-        def process(self, p, *args):                  
-          rdtext= extract_hash_tags(p.prompt)
-          if(rdtext):
-            for i  in range(len(p.all_prompts)):
-              p.all_prompts[i]=rdtext
-       
            
-        
-        
-def extract_hash_tags(text):
+    
+        def before_process(self, p, *args):      
+            extract_classesTags(p)
+            extract_tags(p)
+            pass
+            
+ 
+def extract_classesTags(p):  
    pattern = r'#\[(.*?)\]'
-   matches = re.findall(pattern, text)  
+   matches=re.findall(pattern, p.prompt)  
    if(len(matches)==0) :
-       return  None
+       return 
+   for key in matches:
+       if(key in listdynamice):
+            newtext=''
+            for item in listdynamice[key]:
+                newtext+=listdynamice[key][item]+'#'
+            p.prompt=p.prompt.replace(key,newtext,1)
+            pass
+           
+              
+def extract_tags(p):
+   pattern = r'#\[(.*?)\]'
+   matches = re.findall(pattern, p.prompt)  
+   text=p.prompt
+   if(len(matches)==0) :
+       return   
    for item in matches:
-      arr=item.split(',')
+      arr=item.split('#')
       random.seed(getSeed())
       rdindex=random.randint(0,len(arr)-1)
       rdtext=arr[rdindex]
       text = re.sub(pattern, rdtext, text,count=1)
-     
-   return text
+   p.prompt=text  
+    
 
 def getSeed():
      seed = random.random()
