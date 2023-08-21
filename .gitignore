@@ -4,6 +4,7 @@
 /scripts/__pycache__/
 /yours/* 
 !/yours/.gitkeep 
+__pycache__
 
 *.git*
 *.swp
