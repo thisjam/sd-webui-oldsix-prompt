@@ -79,13 +79,15 @@ class Script(scripts.Script):
                 eid='oldsix-prompt1'     
                 tid='oldsix-area1'           
             with gr.Row(elem_id=eid):
-                       with gr.Accordion(label="SixGod_K提示词 v1.32",open=False):
+                       with gr.Accordion(label="SixGod_K提示词 v1.33",open=False):
+                             gr.HTML('<a href="https://github.com/thisjam/sd-webui-oldsix-prompt/">【使用说明书】</a>')
                              textarea=gr.TextArea(self.json,elem_id=tid,visible=False)
-                           
+                            
                              with gr.Column(scale=4,elem_id="oldsix-optit"):
                                 btnreload=gr.Button('🔄',elem_classes="oldsix-reload sm secondary gradio-button svelte-1ipelgc")
                                 gr.Button('清空正面提示词', variant="secondary",elem_classes="oldsix-clear")
                                 gr.Button('清空负面提示词',variant="secondary",elem_classes="oldsix-clear")
+                               
                              with gr.Column(scale=4,elem_id="oldsix-optit"):
                                   gr.HTML('<p class="oldsix-classes-shop"></p>')  
                              with gr.Accordion(label="随机灵感",open=False):                               
@@ -129,15 +131,22 @@ def extract_classesTags(p):
    pattern = r'#\[(.*?)\]'
    matches=re.findall(pattern, p.prompt)  
    if(len(matches)==0) :
-       return 
-   for key in matches:
-       if(key in listdynamice):
-            newtext=''
-            for item in listdynamice[key]:
-                newtext+=listdynamice[key][item]+'#'
-            p.prompt=p.prompt.replace(key,newtext,1)
-            pass
-           
+       return  
+   for mathch in matches:
+        arr=mathch.split('#')
+        randlist=[]
+        for classesKey in arr:      
+            if(classesKey in listdynamice):       
+                randlist.append(listdynamice[classesKey])  
+        if len(randlist)==0: continue    
+        random.seed(getSeed())
+        rdindex=random.randint(0,len(randlist)-1)
+        newtext=''
+        for item in randlist[rdindex]:
+            newtext+=randlist[rdindex][item]+'#'
+        p.prompt=p.prompt.replace(mathch,newtext,1)
+        pass
+            
               
 def extract_tags(p):
    pattern = r'#\[(.*?)\]'
