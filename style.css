@@ -1,131 +1,134 @@
 
 .oldsix-content {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(30%, 1fr));
-    gap: 15px;
+   display: grid;
+   grid-template-columns: repeat(auto-fit, minmax(30%, 1fr));
+   gap: 15px;
 
 }
- 
+
 
 .oldsix-btn-tit {
-    width: 100%;
-    margin-bottom:5px !important
+   width: 100%;
+   margin-bottom:5px !important
 }
 
 .oldsix-row {
-    /* width: 100%; */
-    border: 1px solid #eeee; 
-    border-radius: 8px;
-    box-shadow: 0 0 15px #3d363650;
-    padding: 10px; 
-       
-     
+   /* width: 100%; */
+   border: 1px solid #eeee; 
+   border-radius: 8px;
+   box-shadow: 0 0 15px #3d363650;
+   padding: 10px; 
+      
+    
 }
 .oldsix-row>.oldsix-row{
-    width: 48%;
-    display: inline-block;
-    margin-bottom: 2%;
-    margin-right: 2%;
-    vertical-align: top;
-    min-height: 150px;
+   width: 48%;
+   display: inline-block;
+   margin-bottom: 2%;
+   margin-right: 2%;
+   vertical-align: top;
+   min-height: 150px;
 }
 
 .oldsix-btn {
-    margin: 3px !important;
-    position: relative !important; 
-    display: inline-block!important; 
-    overflow:visible!important
+   margin: 3px !important;
+   position: relative !important; 
+   display: inline-block!important; 
+   overflow:visible!important
 }
 
 .oldsix-btn:hover::after{
-    content: attr(data-sixoldtit);
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background-image: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%);
-    border-radius: 5px;
-    z-index: 9999!important;
-    transform: translateY(15px);
-    width: max-content;
-    line-height: 2em;
-    word-wrap: normal;
-    color:black;
-    font-weight: bold;
-    transition: width 0.3s linear;
-    display: inline-block;
-    overflow:hidden;
-    padding: 10px;
+   content: attr(data-sixoldtit);
+   position: absolute;
+   top: 100%;
+   left: 0;
+   background-image: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%);
+   border-radius: 5px;
+   z-index: 9999!important;
+   transform: translateY(15px);
+   width: max-content;
+   line-height: 2em;
+   word-wrap: normal;
+   color:black;
+   font-weight: bold;
+   transition: width 0.3s linear;
+   display: inline-block;
+   overflow:hidden;
+   padding: 10px;
 }
 
- 
+
 .oldsix-btn:hover::before{
-    content: '';   
-    display: inline-block;
-    width: 0;
-    height: 0;
-    border-top: 10px solid transparent;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-bottom: 10px solid #96e6a1;
-    position: absolute;
-    left:0;
-    top: 100%;
-    z-index: 9999!important;
-  }
-  
-
-  .six-hide{
-     display: none;
-  }
-  
-  .six-show{
-    display: block;
+   content: '';   
+   display: inline-block;
+   width: 0;
+   height: 0;
+   border-top: 10px solid transparent;
+   border-left: 10px solid transparent;
+   border-right: 10px solid transparent;
+   border-bottom: 10px solid #96e6a1;
+   position: absolute;
+   left:0;
+   top: 100%;
+   z-index: 9999!important;
  }
  
- #oldsix-optit{
-    display: block;
-     
- }
- #oldsix-optit button{
-    margin: 5px;
- }
- .oldsix-reload{
-    width: 50px !important; 
-   
- }
- .oldsix-clear{
-    width: fit-content!important;
-     
- }
 
- .oldsix-btn.active{
-    background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%)!important;
-    color:black;
- }
-
- .oldsix-btn.active:hover{
-    background: linear-gradient(120deg, #a8d63d 10%, #96e6a1 100%)!important;
- }
- .oldsix-tab-nav button{
-     position: relative;
- }
- .oldsix-tab-nav button.active::after{
-    position: absolute;
-    content: '';
-    display: block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-image: linear-gradient(to top, #0ba360 0%, #3cba92 100%);
-    right: 3px;
-    top:50%;
-    transform: translateY(-50%);
+ .six-hide{
+    display: none;
  }
  
- .old-six-shop{
-  
-   background-color: #0ba360;
-   
+ .six-show{
+   display: block;
+}
 
- }
+#oldsix-optit button{
+   margin: 5px;
+}
+
+.oldsix-reload{
+   width: 50px !important;
+   min-width: 50px !important;
+   flex: 0 !important;
+}
+.oldsix-clear{
+  flex: 0 !important;
+}
+.oldsix-async-tag{
+  flex: 0 !important;
+}
+.oldsix-switch-dynamic {
+  flex: 0 !important;
+}
+
+.oldsix-btn.active{
+   background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%)!important;
+   color:black;
+}
+
+.oldsix-btn.active:hover{
+   background: linear-gradient(120deg, #a8d63d 10%, #96e6a1 100%)!important;
+}
+.oldsix-tab-nav button{
+    position: relative;
+}
+.oldsix-tab-nav button.active::after{
+   position: absolute;
+   content: '';
+   display: block;
+   width: 8px;
+   height: 8px;
+   border-radius: 50%;
+   background-image: linear-gradient(to top, #0ba360 0%, #3cba92 100%);
+   right: 3px;
+   top:50%;
+   transform: translateY(-50%);
+}
+
+.old-six-shop{
+ 
+  background-color: #0ba360;
+  
+
+}
 

@@ -36,7 +36,9 @@ let dicClass={
  
 const loadTime=3000
  
- 
+let currentTabName = ''
+
+let hasDynamicPrompts = false
   
 
 function getEle(key) {
@@ -61,7 +63,7 @@ function CreateEle(type,parentDom,css,html){
     let elementprompt =e.target.dataset.pageindex==1 ? Elements.imgpromt : Elements.txtpromt
     dom.classList.toggle("active")
     toggleNavCss(dom)
-    ishas=false;
+    let ishas = false;
     for (const item of dom.classList) {
         if(item=='active'){     
             ishas=true
@@ -168,11 +170,16 @@ function createBtnTitle(name,val,parent,pageindex){
    for (const key in val) {
        if (typeof val[key] != 'object' ){
             btn.addEventListener('click', function () {
-                addDicClasses(name, val, pageindex)
+                if (hasDynamicPrompts) {
+                    addDynamicTitlePrompt(e, name, pageindex)
+                } else {
+                    addDicClasses(name,val,pageindex)
+                }
             });
           
             btn.addEventListener('contextmenu', function (e) {
                 e.preventDefault();
+                if (hasDynamicPrompts) return
                 addDynamicToTextArea(btn, pageindex)
        
             })
@@ -182,6 +189,28 @@ function createBtnTitle(name,val,parent,pageindex){
     } 
    
    return div
+}
+
+function addDynamicTitlePrompt(e, str, pageindex) {
+    let dom = e.target;
+    currentTabName = currentTabName.replace(/[、|\|]/g, '_')
+    
+    let elementprompt = pageindex === 1 ? Elements.imgpromt : Elements.txtpromt
+    dom.classList.toggle("active")
+    toggleNavCss(dom)
+    let ishas = false;
+    for (const item of dom.classList) {
+        if(item === 'active'){     
+            ishas = true
+        }
+    }
+    if(!ishas){
+        elementprompt.value= elementprompt.value.replace(`__dp/${currentTabName}/${str}__,`, '');       
+        return
+    }
+    
+    InserttextToTextArea(elementprompt,`__dp/${currentTabName}/${str}__`)
+     
 }
 
  
@@ -281,6 +310,7 @@ function tabClick(self){
         if(i==index){
             contents[i].classList.remove('six-hide')
             selfdivs[i].classList.add('selected')
+            currentTabName = selfdivs[i].innerHTML
         }
         else{
             contents[i].classList.add('six-hide')
@@ -308,6 +338,7 @@ function reloadNodes(jsonstring, btnreloadDom) {
         tabitem.dataset.tabitem=count
         let content=CreateEle('div',tabitem,'oldsix-content','')
         if(count==0){
+            currentTabName = key // Todo 特殊符号处理
             tabbtn.classList.add('selected')
             tabitem.classList.remove('six-hide')
         }
@@ -404,6 +435,28 @@ function loadClearbtn(){
   })
 }
 
+function loadSwitchDynamic () {
+    let switchDom1 = Elements.prompt.querySelector('.oldsix-switch-dynamic > label > input')
+    let switchDom2 = Elements.prompt2.querySelector('.oldsix-switch-dynamic > label > input')
+    let oldsixOptit1 = Elements.prompt.querySelector('#oldsix-optit') 
+    let oldsixOptit2 = Elements.prompt2.querySelector('#oldsix-optit') 
+    let oldsixRandom1 = Elements.prompt.querySelector('#oldsix-random') 
+    let oldsixRandom2 = Elements.prompt2.querySelector('#oldsix-random') 
+    hasDynamicPrompts = switchDom1.checked
+    switchDom1.addEventListener('click', function (e){ // 文生图和图生图这个开关同步
+        hasDynamicPrompts = e.target.checked
+        switchDom2.checked = hasDynamicPrompts
+        oldsixOptit1.style.display = hasDynamicPrompts ? 'none' : 'block'
+        oldsixRandom1.style.display = hasDynamicPrompts ? 'none' : 'block'
+    })
+    switchDom2.addEventListener('click', function (e){
+        hasDynamicPrompts = e.target.checked
+        switchDom1.checked = hasDynamicPrompts
+        oldsixOptit2.style.display = hasDynamicPrompts ? 'none' : 'block'
+        oldsixRandom2.style.display = hasDynamicPrompts ? 'none' : 'block'
+    })
+}
+
 
 function ranDomPropt(pageindex){ 
     let texten=''
@@ -488,7 +541,8 @@ onUiLoaded(()=> {
 
 function initData(){
     move()   
-    loadClearbtn()    
+    loadClearbtn()
+    loadSwitchDynamic() 
     initBtnsEvent() 
     loadCustomUI() 
 }

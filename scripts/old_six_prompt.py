@@ -7,7 +7,11 @@ import re
 
 current_script = os.path.realpath(__file__)
 current_folder = os.path.dirname(current_script)   
-work_basedir = os.path.dirname(current_folder)   #本插件目录  
+work_basedir = os.path.dirname(current_folder)   #本插件目录
+wildcards_basedir = os.path.join(os.path.dirname(work_basedir), 'sd-dynamic-prompts')
+
+hasDynamicPrompts = os.path.exists(wildcards_basedir)
+
 path1 = work_basedir+ r"/json"
 path2 = work_basedir+ r"/yours"
 pathrandom = work_basedir+ r"/random"
@@ -82,15 +86,15 @@ class Script(scripts.Script):
                        with gr.Accordion(label="SixGod_K提示词 v1.33",open=False):
                              gr.HTML('<a href="https://github.com/thisjam/sd-webui-oldsix-prompt/">【使用说明书】</a>')
                              textarea=gr.TextArea(self.json,elem_id=tid,visible=False)
-                            
-                             with gr.Column(scale=4,elem_id="oldsix-optit"):
-                                btnreload=gr.Button('🔄',elem_classes="oldsix-reload sm secondary gradio-button svelte-1ipelgc")
+                             with gr.Row():
+                                btnreload = gr.Button('🔄',elem_classes="oldsix-reload sm secondary gradio-button svelte-1ipelgc")
                                 gr.Button('清空正面提示词', variant="secondary",elem_classes="oldsix-clear")
                                 gr.Button('清空负面提示词',variant="secondary",elem_classes="oldsix-clear")
-                               
-                             with gr.Column(scale=4,elem_id="oldsix-optit"):
+                                btnAsyncTag = gr.Button('同步至wildcards',variant="primary",elem_classes="oldsix-async-tag",visible=hasDynamicPrompts)
+                                gr.Checkbox(label="启用动态语法",elem_classes="oldsix-switch-dynamic",value=hasDynamicPrompts,visible=hasDynamicPrompts)
+                             with gr.Column(scale=4,elem_id="oldsix-optit",visible=not hasDynamicPrompts):
                                   gr.HTML('<p class="oldsix-classes-shop"></p>')  
-                             with gr.Accordion(label="随机灵感",open=False):                               
+                             with gr.Accordion(label="随机灵感",elem_id="oldsix-random",open=False,visible=not hasDynamicPrompts):                               
                                 rdtextareaEn=gr.TextArea(label='英文预览框',elem_id='randomTextEn',lines=3,visible=False)
                                 rdtextareaZh=gr.TextArea(label='预览框',elem_id='randomTextZh',lines=3)     
                                 with gr.Row():       
@@ -114,10 +118,37 @@ class Script(scripts.Script):
                 return [self.rdlist[self.randomIndex]['val'],rden]            
             def reloadData():
                 return LoadTagsFile()
-                 
-      
+
+            async def asyncTag():
+                # 获取保存目录的基础路径
+                base_path = wildcards_basedir + r"/wildcards/dp"  # 替换为实际的路径
+
+                data = json.loads(self.json)
+
+                def sanitize_filename(filename):
+                    return "".join(c if c.isalnum() or c in ['_', '.'] else '_' for c in filename)
+
+                for node_name, node_data in data.items():
+                    node_path = os.path.join(base_path, sanitize_filename(node_name))
+                    os.makedirs(node_path, exist_ok=True)
+
+                    print('node_path', node_path)
+
+                    for txt_name, tags in node_data.items():
+                        txt_file_path = os.path.join(node_path, sanitize_filename(txt_name) + '.txt')
+                        with open(txt_file_path, "w", encoding="utf-8") as file:
+                            if isinstance(tags, dict):
+                                for v in tags.values():
+                                    file.write(v + '\n')
+                            else:
+                                file.write(tags + '\n')
+
             btnreload.click(fn=reloadData,inputs=None,outputs=textarea)  
-            btnRandom.click(fn=randomPrompt,inputs=None,outputs=[rdtextareaEn,rdtextareaZh])                                                                                                                 
+            btnRandom.click(fn=randomPrompt,inputs=None,outputs=[rdtextareaEn,rdtextareaZh])
+            btnAsyncTag.click(fn=asyncTag,inputs=None,outputs=None)
+        
+     
+                                                                                                                        
             return [btnreload]
            
     
