@@ -83,9 +83,7 @@ function CreateEle(type,parentDom,css,html){
         }
         return
     }
-   
     updatatextToTextArea(elementprompt,str)
-     
 }
 
 
@@ -169,7 +167,7 @@ function createBtnTitle(name,val,parent,pageindex){
    parent.appendChild(div)
    for (const key in val) {
        if (typeof val[key] != 'object' ){
-            btn.addEventListener('click', function () {
+            btn.addEventListener('click', function (e) {
                 if (hasDynamicPrompts) {
                     addDynamicTitlePrompt(e, name, pageindex)
                 } else {
@@ -191,25 +189,99 @@ function createBtnTitle(name,val,parent,pageindex){
    return div
 }
 
+
+function addDynamicPrompt (e, parent) {
+    const dom = e.target
+    const str = e.target.dataset.sixoldtit
+    const tagLength = parent.querySelectorAll('.oldsix-btn').length
+    const activeBtns = parent.querySelectorAll('.oldsix-btn.active')
+    const activeTags = []
+    activeBtns.forEach(item => activeTags.push(item.dataset.sixoldtit))
+
+    dom.classList.toggle("active")
+    toggleNavCss(dom)
+
+    const elementprompt = e.target.dataset.pageindex === 1 ? Elements.imgpromt : Elements.txtpromt
+
+    if (tagLength === activeTags.length) {
+        const titleDom = parent.querySelector('.oldsix-btn-tit')
+        titleDom.classList.toggle("active")
+        toggleNavCss(titleDom)
+        const deleteIndex = activeTags.findIndex(e => e === str)
+        activeTags.splice(deleteIndex, 1)
+        const value = '{' + activeTags.join('|') + '}'
+        elementprompt.value = elementprompt.value.replace(`__dp/${currentTabName}/${titleDom.innerHTML}__`, value);       
+        return
+    }
+
+    const hasAdd = Array.from(dom.classList).includes('active')
+
+    const regex = /{([^{}]+)}/g
+    const matches = elementprompt.value.match(regex)
+    let currentMatch = ''
+    if (matches && matches.length && activeTags.length) {
+        currentMatch = matches.find(item => activeTags.every((e) => item.includes(e)))
+        if (currentMatch) { // 针对当前的动态语句做处理
+            const currentTags = currentMatch.substring(1, currentMatch.length - 1).split('|') // 只保留tag
+            if (hasAdd) {
+                currentTags.push(str)
+            } else {
+                const index = currentTags.findIndex(item => item.includes(str))
+                if (index !== -1) currentTags.splice(index, 1)
+            }
+            const finallyVal = currentTags.length ? '{' + currentTags.join('|') + '}' : ''
+            elementprompt.value= elementprompt.value.replace(currentMatch, finallyVal);       
+            return
+        }
+    }
+
+    if (hasAdd) {
+        updatatextToTextArea(elementprompt,`{${str}}`)
+    }
+}
+
 function addDynamicTitlePrompt(e, str, pageindex) {
     let dom = e.target;
     currentTabName = currentTabName.replace(/[、|\|]/g, '_')
-    
-    let elementprompt = pageindex === 1 ? Elements.imgpromt : Elements.txtpromt
+    const parent = dom.parentNode
+    const btns = parent.querySelectorAll('.oldsix-btn')
+    const activeBtns = parent.querySelectorAll('.oldsix-btn.active')
+    const activeTags = []
+    activeBtns.forEach(item => activeTags.push(item.dataset.sixoldtit))
+
     dom.classList.toggle("active")
     toggleNavCss(dom)
-    let ishas = false;
-    for (const item of dom.classList) {
-        if(item === 'active'){     
-            ishas = true
+    let hasAdd = Array.from(dom.classList).includes('active')
+
+    for (let btn of btns) {
+        if (hasAdd === !Array.from(btn.classList).includes('active')) {
+            btn.classList.toggle("active")
+            toggleNavCss(btn)
         }
     }
-    if(!ishas){
+    
+    let elementprompt = pageindex === 1 ? Elements.imgpromt : Elements.txtpromt
+
+
+    if(!hasAdd){
         elementprompt.value= elementprompt.value.replace(`__dp/${currentTabName}/${str}__,`, '');       
         return
     }
+
+    if (activeTags.length) {
+        const regex = /{([^{}]+)}/g
+        const matches = elementprompt.value.match(regex)
+        let currentMatch = ''
+        if (matches && matches.length) {
+            currentMatch = matches.find(item => activeTags.every((e) => item.includes(e)))
+            if (currentMatch) { // 针对当前的动态语句做处理
+                elementprompt.value= elementprompt.value.replace(currentMatch, `__dp/${currentTabName}/${str}__`);  
+                return
+            }
+        }
+    }
     
-    InserttextToTextArea(elementprompt,`__dp/${currentTabName}/${str}__`)
+    updatatextToTextArea(elementprompt,`__dp/${currentTabName}/${str}__`)
      
 }
 
@@ -268,8 +340,12 @@ function createBtnPrompt(key,val,parent,pageindex){
     btn.dataset.sixoldtit=val
     btn.dataset.pageindex=pageindex
     parent.appendChild(btn)
-    btn.addEventListener('click',function(e){     
-        addPrompt(e)
+    btn.addEventListener('click',function(e){
+        if (hasDynamicPrompts) {
+            addDynamicPrompt(e, parent)
+        } else {
+            addPrompt(e)
+        }
     })
     btn.addEventListener('contextmenu', function (e) {
         e.preventDefault();
