@@ -1,4 +1,4 @@
-
+let Elements;
 function loadNodes() {
     let Elements = {
         prompt: getEle('#oldsix-prompt1'),
@@ -349,7 +349,10 @@ function move(){
     Elements = loadNodes()
     Elements.txt2img.appendChild(Elements.prompt)
     Elements.img2img.appendChild(Elements.prompt2)
-    
+    let checkboxParents= getEleAll('.oldsix-checklock')
+    checkboxParents.forEach(item=>{
+        item.parentElement.classList.add('oldsix-inline')
+    })
 }
 
 function clearPrompt(pageindex){
