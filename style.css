@@ -129,3 +129,14 @@
 
  }
 
+ .oldsix-checklock{
+   /* width: fit-content !important; */
+   margin-left: 30px !important;
+ }
+
+ .oldsix-inline{
+    display: inline-block!important;
+    max-width: 500px !important;
+ }
+
+  

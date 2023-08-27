@@ -60,6 +60,7 @@ class Script(scripts.Script):
         json= LoadTagsFile()
         randomIndex=0
         txtprompt=None
+        isLockPrompt=False
         
         def after_component(self, component, **kwargs):
            if(component.elem_id=="txt2img_prompt" or component.elem_id=="img2img_prompt"):
@@ -79,14 +80,17 @@ class Script(scripts.Script):
                 eid='oldsix-prompt1'     
                 tid='oldsix-area1'           
             with gr.Row(elem_id=eid):
-                       with gr.Accordion(label="SixGod_K提示词 v1.33",open=False):
+                       with gr.Accordion(label="SixGod_K提示词 v1.34",open=False):
                              gr.HTML('<a href="https://github.com/thisjam/sd-webui-oldsix-prompt/">【使用说明书】</a>')
+                            
                              textarea=gr.TextArea(self.json,elem_id=tid,visible=False)
                             
                              with gr.Column(scale=4,elem_id="oldsix-optit"):
                                 btnreload=gr.Button('🔄',elem_classes="oldsix-reload sm secondary gradio-button svelte-1ipelgc")
                                 gr.Button('清空正面提示词', variant="secondary",elem_classes="oldsix-clear")
                                 gr.Button('清空负面提示词',variant="secondary",elem_classes="oldsix-clear")
+                                chDynamic=gr.Checkbox(label="锁定【动态批次】提示词",elem_classes="oldsix-checklock",container=False,scale=1)
+                                
                                
                              with gr.Column(scale=4,elem_id="oldsix-optit"):
                                   gr.HTML('<p class="oldsix-classes-shop"></p>')  
@@ -114,53 +118,80 @@ class Script(scripts.Script):
                 return [self.rdlist[self.randomIndex]['val'],rden]            
             def reloadData():
                 return LoadTagsFile()
-                 
+            
+            def CheckboxChange(input):
+               self.isLockPrompt=input
+               return input
+              
       
             btnreload.click(fn=reloadData,inputs=None,outputs=textarea)  
-            btnRandom.click(fn=randomPrompt,inputs=None,outputs=[rdtextareaEn,rdtextareaZh])                                                                                                                 
+            btnRandom.click(fn=randomPrompt,inputs=None,outputs=[rdtextareaEn,rdtextareaZh])   
+            chDynamic.select(fn=CheckboxChange,inputs=chDynamic,outputs=chDynamic,show_progress=False)   
+                                                                                                                    
             return [btnreload]
            
-    
-        def before_process(self, p, *args):      
-            extract_classesTags(p)
-            extract_tags(p)
-            pass
+     
+
+        def before_process(self, p, *args):       
+            if(self.isLockPrompt):
+               temppromt= extract_classesTags(p.prompt)
+               if(temppromt):
+                   res=extract_tags(temppromt)                   
+                   if(res):
+                        p.prompt=res
+        
+        def process(self, p, *args): 
+             if(not self.isLockPrompt):
+                for index,val in  enumerate(p.all_prompts):
+                    temppromt=extract_classesTags(p.prompt)
+                    if(temppromt):
+                        res=extract_tags(temppromt)
+                        if(res):
+                            p.all_prompts[index]=res
+                
+             
+         
+         
+                    
+                
+
+            
             
  
-def extract_classesTags(p):  
+def extract_classesTags(prompt):  
    pattern = r'#\[(.*?)\]'
-   matches=re.findall(pattern, p.prompt)  
+   matches=re.findall(pattern, prompt)  
    if(len(matches)==0) :
-       return  
+       return None
    for mathch in matches:
-        arr=mathch.split('#')
-        randlist=[]
-        for classesKey in arr:      
-            if(classesKey in listdynamice):       
-                randlist.append(listdynamice[classesKey])  
-        if len(randlist)==0: continue    
-        random.seed(getSeed())
-        rdindex=random.randint(0,len(randlist)-1)
-        newtext=''
-        for item in randlist[rdindex]:
-            newtext+=randlist[rdindex][item]+'#'
-        p.prompt=p.prompt.replace(mathch,newtext,1)
-        pass
+            arr=mathch.split('#')
+            randlist=[]
+            for classesKey in arr:      
+                if(classesKey in listdynamice):       
+                    randlist.append(listdynamice[classesKey])  
+            if len(randlist)==0: continue    
+            random.seed(getSeed())
+            rdindex=random.randint(0,len(randlist)-1)
+            newtext=''
+            for item in randlist[rdindex]:
+                newtext+=randlist[rdindex][item]+'#'
+            prompt=prompt.replace(mathch,newtext,1)
+   return  prompt
             
               
-def extract_tags(p):
+def extract_tags(prompt):
    pattern = r'#\[(.*?)\]'
-   matches = re.findall(pattern, p.prompt)  
-   text=p.prompt
+   matches = re.findall(pattern, prompt)  
+   text=prompt
    if(len(matches)==0) :
-       return   
+       return  None
    for item in matches:
       arr=item.split('#')
       random.seed(getSeed())
       rdindex=random.randint(0,len(arr)-1)
       rdtext=arr[rdindex]
       text = re.sub(pattern, rdtext, text,count=1)
-   p.prompt=text  
+   return text
     
 
 def getSeed():
