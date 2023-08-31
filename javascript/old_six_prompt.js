@@ -21,6 +21,8 @@ function loadNodes() {
         btnClearP:[],
         btnClearNP:[],
         pClasses:[],
+        txtLeftLayout:getEle('#txt2img_results'),
+        imgLeftLayout:getEle('#img2img_results'),
         
         
 
@@ -32,7 +34,9 @@ let dicClass={
    0:{},
    1:{}
 }   
- 
+
+let tabButtonCss="svelte-1g805jl svelte-kqij2n"
+let subClassBtnTitleCss="svelte-1ipelgc svelte-cmf5ev"
  
 const loadTime=3000
  
@@ -161,7 +165,7 @@ function createBtnTitle(name,val,parent,pageindex){
    let div=document.createElement('div')
    let btn=document.createElement('button')
    setCss(div,'oldsix-row ')
-   setCss(btn,'oldsix-btn-tit sm primary gradio-button svelte-1ipelgc')
+   setCss(btn,`oldsix-btn-tit sm primary gradio-button ${subClassBtnTitleCss}`)
    btn.innerHTML=name
    div.appendChild(btn)
    parent.appendChild(div)
@@ -215,7 +219,7 @@ function addDicClasses(key,val,pageindex)
 function CreateClassesBtn(btnName,pageindex)
 { 
    let btn=document.createElement('button')
-   setCss(btn,'sm secondary gradio-button svelte-1ipelgc')
+   setCss(btn,`sm secondary gradio-button ${subClassBtnTitleCss}`)
    btn.innerHTML=btnName
    Elements.pClasses[pageindex].appendChild(btn);
    btn.addEventListener('click',function(){
@@ -234,7 +238,7 @@ function CreateClassesBtn(btnName,pageindex)
 
 function createBtnPrompt(key,val,parent,pageindex){ 
     let btn=document.createElement('button')
-    setCss(btn,'sm secondary gradio-button svelte-1ipelgc oldsix-btn')
+    setCss(btn,`sm secondary gradio-button oldsix-btn ${subClassBtnTitleCss}`)
     btn.innerHTML=key
     btn.dataset.sixoldtit=val
     btn.dataset.pageindex=pageindex
@@ -299,7 +303,7 @@ function reloadNodes(jsonstring, btnreloadDom) {
     let contentContainer=document.createElement('div')
     let count=0
     Object.keys(jsonObj).forEach(function (key) {      
-        let tabbtn=CreateEle('button',tabnav,'svelte-1g805jl',key)
+        let tabbtn=CreateEle('button',tabnav,tabButtonCss,key)
         tabbtn.dataset.tabitem=count
         tabbtn.addEventListener('click',()=>{
             tabClick(tabbtn)
@@ -315,8 +319,8 @@ function reloadNodes(jsonstring, btnreloadDom) {
         count++
     });
   
-    setCss(tabs, 'oldsix-tabs gradio-tabs svelte-1g805jl')
-    setCss(tabnav, 'oldsix-tab-nav scroll-hide svelte-1g805jl')
+    setCss(tabs, `oldsix-tabs gradio-tabs ${tabButtonCss}`)
+    setCss(tabnav, `oldsix-tab-nav scroll-hide ${tabButtonCss}`)
     setCss(contentContainer, 'tab-container')
      
     tabs.appendChild(tabnav)
@@ -485,7 +489,7 @@ function initBtnsEvent(){
  
 
 onUiLoaded(()=> {
-
+  
     initData()
 })
 
