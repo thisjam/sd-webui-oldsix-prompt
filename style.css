@@ -143,3 +143,46 @@
 }
 
  
+
+.old-six-traninput{
+   width: 50%!important;
+   position: fixed!important;
+   margin:auto!important;
+   left:0;
+   right:0;
+   top:20%;
+   z-index: 999!important;
+   
+   
+}
+.old-six-traninput textarea{
+   height: 60px!important;
+   border: 3px #fff solid!important;
+   background-color: #d38181!important;
+   position: relative;
+   color:#fff!important;
+   box-shadow: 5px 5px 15px #000!important;
+   outline: 0px!important;
+   font-size: 16px!important;
+   line-height:16px!important;
+   
+  
+}
+.old-six-traninput textarea::placeholder {
+   font-size: 16px;
+   font-family: Arial;
+   letter-spacing: 5px;
+   color: #fff !important;
+   text-align: center;
+   font-weight: bold;
+   padding-top:15px!important; 
+}
+ 
+.old-six-traninput textarea:focus {
+   border: 3px #e5ff00 solid!important;
+   /* outline: 3px #0714c7 solid!important; */
+  
+}
+
+
+ 

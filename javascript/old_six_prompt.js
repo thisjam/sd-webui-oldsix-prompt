@@ -16,6 +16,10 @@ function loadNodes() {
         btnSends:getEleAll('.oldsix-btnSend'),
         txtStart:getEleAll('.oldsix-txt-start textarea'),
         txtEnd:getEleAll('.oldsix-txt-end textarea'),
+        trans:getEleAll('.old-six-traninput'),
+        tabtxt:getEle("#tab_txt2img"),
+        tabimg:getEle("#tab_img2img"),
+      
         
         btnReload:[],
         btnClearP:[],
@@ -357,6 +361,8 @@ function move(){
     checkboxParents.forEach(item=>{
         item.parentElement.classList.add('oldsix-inline')
     })
+    getEle("#tab_txt2img").appendChild(Elements.trans[0])
+    getEle("#tab_img2img").appendChild(Elements.trans[1])
 }
 
 function clearPrompt(pageindex){
@@ -448,16 +454,7 @@ function initBtnsEvent(){
             reloadUI()               
         })
     })
-    Elements.btnSends.forEach((item,index) => { 
-        item.addEventListener('click', () => {  
-            let elementprompt=index==1 ? Elements.imgpromt : Elements.txtpromt
-            elementprompt.value=''
-            elementprompt.focus(); 
-            let str=Elements.RdtxtAreasEn[index].value
-            str=Elements.txtStart[index].value+str+Elements.txtEnd[index].value
-            document.execCommand('insertText', false,str);   
-        })
-    })
+    
     Elements.pClasses=document.querySelectorAll('.oldsix-classes-shop')
     Elements.btnReload= document.querySelectorAll('.oldsix-reload');
     Elements.btnRandoms= document.querySelectorAll('.btn-crandom');
@@ -472,6 +469,9 @@ function initBtnsEvent(){
             reloadUI()               
         })
     })
+    
+
+
     Elements.btnSends.forEach((item,index) => { 
         item.addEventListener('click', () => {  
             let elementprompt=index==1 ? Elements.imgpromt : Elements.txtpromt
@@ -486,7 +486,13 @@ function initBtnsEvent(){
     
 }
 
+function translateText(text){
+    
+    let arr= text.split('#')
+    let elementprompt=arr[1]=='True' ? Elements.imgpromt : Elements.txtpromt
+    updatatextToTextArea(elementprompt,arr[0].toLowerCase())
  
+}
 
 onUiLoaded(()=> {
   
@@ -498,19 +504,29 @@ function initData(){
     loadClearbtn()    
     initBtnsEvent() 
     loadCustomUI() 
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'F1') {  
+            let txtdisplay = window.getComputedStyle(Elements.tabtxt).display;
+            let imgdisplay = window.getComputedStyle(Elements.tabimg).display;
+            if (txtdisplay === 'block') {
+                   Elements.trans[0].classList.toggle('six-hide')
+            }
+            if (imgdisplay === 'block') {
+                Elements.trans[1].classList.toggle('six-hide')
+            }
+        }
+    });
+    
+   
 }
 
 
+ 
+  
+ 
+ 
 
 
 
 
-
-
-
-
-
-
-
-
-
+  

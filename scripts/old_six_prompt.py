@@ -4,7 +4,7 @@ import os,json
 import json
 import random
 import re
-
+from bs4 import BeautifulSoup
 current_script = os.path.realpath(__file__)
 current_folder = os.path.dirname(current_script)   
 work_basedir = os.path.dirname(current_folder)   #本插件目录  
@@ -48,14 +48,45 @@ def traverse_dict(d,clsName=None):
             else:
                 listdynamice[clsName]=d
                 break
+
               
-            
-        
-                    
-     
- 
-class Script(scripts.Script):
-        
+import requests
+
+
+def get_content(text):
+    try:  
+        localtran=bytes.fromhex('68747470733A2F2F646963742E796F7564616F2E636F6D2F772F') 
+        localtran=localtran.decode()
+        response = requests.get(localtran+text)
+        if response.status_code == 200:       
+            return response.text
+        else:
+            print(f"err_code：{response.status_code}")
+            return None
+    except requests.exceptions.RequestException as e:
+        print(f"err：{e}")
+        return None
+
+def tanslate(cntext):
+    html_content = get_content(cntext)
+    if html_content is not None: 
+        dom = BeautifulSoup(html_content, 'html.parser')      
+        ydhtml=dom.find('div',id='fanyiToggle')
+        if(ydhtml):
+            div=ydhtml.find('div',class_='trans-container')
+            childhtml=div.find_all('p')
+            return childhtml[1].get_text()
+        shot=dom.find('a',class_='search-js')
+        if(shot):
+              return shot.text.strip()
+        tWebTrans=dom.find('div',id='tWebTrans')
+        if(tWebTrans!=None):             
+             span=tWebTrans.find('span')         
+             text=span.next_sibling.replace("\n", "")  
+             return text.strip()   
+    return None     
+
+class Script(scripts.Script):    
         rdlist=loadRandomList()
         json= LoadTagsFile()
         randomIndex=0
@@ -84,6 +115,8 @@ class Script(scripts.Script):
                              gr.HTML('<a href="https://github.com/thisjam/sd-webui-oldsix-prompt/">【使用说明书】</a>')
                             
                              textarea=gr.TextArea(self.json,elem_id=tid,visible=False)
+                             traninput=gr.Textbox(elem_classes="old-six-traninput six-hide",show_label="",placeholder="输入中文后按回车翻译")
+                             tcache=gr.Textbox(elem_classes="old-six-tcache",visible=False)
                             
                              with gr.Column(scale=4,elem_id="oldsix-optit"):
                                 btnreload=gr.Button('🔄',elem_classes="oldsix-reload sm secondary gradio-button svelte-1ipelgc")
@@ -96,7 +129,7 @@ class Script(scripts.Script):
                                   gr.HTML('<p class="oldsix-classes-shop"></p>')  
                              with gr.Accordion(label="随机灵感",open=False):                               
                                 rdtextareaEn=gr.TextArea(label='英文预览框',elem_id='randomTextEn',lines=3,visible=False)
-                                rdtextareaZh=gr.TextArea(label='预览框',elem_id='randomTextZh',lines=3)     
+                                rdtextareaZh=gr.TextArea(label='预览框',elem_id='randomTextZh',lines=3,interactive=False)     
                                 with gr.Row():       
                                      with gr.Column(scale=4):                    
                                         txtstart=gr.Textbox(placeholder='开头占位提示词',show_label=False,elem_classes="oldsix-txt-start")
@@ -104,13 +137,16 @@ class Script(scripts.Script):
                                         txtend=gr.Textbox(placeholder='结尾占位提示词',show_label=False,elem_classes="oldsix-txt-end")
                                 with gr.Row():
                                     with gr.Column(scale=4):
-                                        btnRandom=gr.Button('随机灵感关键词',variant="primary")                                                               
+                                         btnRandom=gr.Button('随机灵感关键词',variant="primary")                                                               
                                     with gr.Column(scale=4):  
                                          gr.Button('分类组合随机',variant="primary",elem_classes="btn-crandom") 
                                     with gr.Column(scale=4):  
-                                         gr.Button('发送到提示词框',variant="primary",elem_classes="oldsix-btnSend")   
+                                         btnsend=gr.Button('发送到提示词框',variant="primary",elem_classes="oldsix-btnSend") 
+                                        
             
-                    
+            def tanslatePromp(text):
+                text=tanslate(text)
+                return text+'#'+str(is_img2img),''           
             def randomPrompt():     
                 random.seed(getSeed())
                 self.randomIndex= random.randint(0,len(self.rdlist)-1)
@@ -123,10 +159,15 @@ class Script(scripts.Script):
                self.isLockPrompt=input
                return input
               
-      
+            
             btnreload.click(fn=reloadData,inputs=None,outputs=textarea)  
             btnRandom.click(fn=randomPrompt,inputs=None,outputs=[rdtextareaEn,rdtextareaZh])   
             chDynamic.select(fn=CheckboxChange,inputs=chDynamic,outputs=chDynamic,show_progress=False)   
+            traninput.submit(fn=tanslatePromp, inputs=traninput,outputs=[tcache,traninput]
+                            ).then(fn=None,_js="translateText",show_progress=False,inputs=tcache)
+             
+            # tcache.change(fn=lambda:, inputs=tcache,outputs=tcache)
+        
                                                                                                                     
             return [btnreload]
            
@@ -150,12 +191,7 @@ class Script(scripts.Script):
                             p.all_prompts[index]=res
                 
              
-         
-         
-                    
-                
-
-            
+       
             
  
 def extract_classesTags(prompt):  
