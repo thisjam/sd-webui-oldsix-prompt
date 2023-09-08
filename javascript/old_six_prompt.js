@@ -1,4 +1,5 @@
 let Elements;
+const selectPrompts={}
 function loadNodes() {
     let Elements = {
         prompt: getEle('#oldsix-prompt1'),
@@ -19,6 +20,7 @@ function loadNodes() {
         trans:getEleAll('.old-six-traninput'),
         tabtxt:getEle("#tab_txt2img"),
         tabimg:getEle("#tab_img2img"),
+        autoComs:[],
       
         
         btnReload:[],
@@ -27,6 +29,8 @@ function loadNodes() {
         pClasses:[],
         txtLeftLayout:getEle('#txt2img_results'),
         imgLeftLayout:getEle('#img2img_results'),
+        txtul:null,
+        imgul:null
         
         
 
@@ -64,9 +68,8 @@ function CreateEle(type,parentDom,css,html){
  
  function addPrompt(e) {
     let dom=e.target;
-    let str= e.target.dataset.sixoldtit
-    
-    let elementprompt =e.target.dataset.pageindex==1 ? Elements.imgpromt : Elements.txtpromt
+    let str= e.target.dataset.sixoldtit  
+    let elementprompt =e.target.dataset.pageindex==1 ? Elements.imgpromt : Elements.txtpromt  
     dom.classList.toggle("active")
     toggleNavCss(dom)
     ishas=false;
@@ -76,7 +79,7 @@ function CreateEle(type,parentDom,css,html){
         }
     }
     if(!ishas){
-          
+         //删除带权重
         if(elementprompt.value.includes(str+':')){
             const teststr=`${str},|\\(${str}:\\d+\\.\\d+\\),`
             const regex =new RegExp(teststr);    
@@ -84,13 +87,26 @@ function CreateEle(type,parentDom,css,html){
             elementprompt.value= elementprompt.value.replace(regex,'');
              
         }
-        else{
+        //删除
+        else{ 
             elementprompt.value= elementprompt.value.replace(str+',','');       
         }
-        return
+        
+        let selet=selectPrompts[dom.textContent] 
+        if(selet){
+            selet.li.parentNode.removeChild(selet.li)
+            delete selectPrompts[dom.textContent] 
+        }
+       
+        return //
     }
-   
-    updatatextToTextArea(elementprompt,str)
+    
+     //添加
+    let ul =e.target.dataset.pageindex==1 ? Elements.imgul : Elements.txtul 
+    let cn=dom.innerHTML
+    let en=str 
+    addLi(ul,cn,en,dom)
+    updatatextToTextArea(elementprompt,en)
      
 }
 
@@ -99,12 +115,29 @@ function addNPrompt(e) {
     let elementprompt = e.target.dataset.pageindex==1 ? Elements.imgnpromt : Elements.txtnpromt   
     elementprompt.focus();
     document.execCommand('insertText', false, e.target.dataset.sixoldtit + ',')
-   
+    closeAotuCom()
 }
 
 function updatatextToTextArea(inputelem,val){ 
     inputelem.value+=val+','
     updateInput(inputelem)
+    closeAotuCom()
+    
+  
+}
+
+function closeAotuCom(){
+    if(Elements.autoComs.length<2){
+        Elements.autoComs=getEleAll(".autocompleteParent.p")
+       
+    }
+    setTimeout(() => {
+        Elements.autoComs.forEach(element => {
+            element.style.display = "none";
+        })
+    }, 50) 
+
+
 }
 
  
@@ -202,7 +235,7 @@ function addDynamicToTextArea(btnele,pageindex){
         let elementprompt =pageindex==1 ? Elements.imgpromt : Elements.txtpromt
         elementprompt.focus();
         document.execCommand('insertText', false, text + ',')
-    
+        closeAotuCom()
     } 
 
 }
@@ -361,19 +394,57 @@ function move(){
     checkboxParents.forEach(item=>{
         item.parentElement.classList.add('oldsix-inline')
     })
+    Elements.trans.forEach((item,index)=>{
+        item.classList.remove('block')
+        let ul=CreateEle('ul',item,'oldsix-ul','')
+        if(!index){
+            Elements.txtul=ul
+        }
+        else{
+            Elements.imgul=ul
+        }
+        // item.onmousedown = function(event) {
+        //     // 获取div当前的x和y坐标
+        //     var x = event.clientX - item.offsetLeft;
+        //     var y = event.clientY - item.offsetTop;
+        //     item.style.cursor = 'grabbing';
+        //     document.onmousemove = function(event) {
+        //       // 获取鼠标当前的位置
+        //       var newX = event.clientX - x;
+        //       var newY = event.clientY - y;
+          
+        //       // 设置div的新位置
+        //       item.style.left = newX + 'px';
+        //       item.style.top = newY + 'px';
+        //     };
+          
+        //     document.onmouseup = function() {
+        //       // 当鼠标松开时，移除mousemove和mouseup事件，以防止继续拖动
+        //       item.style.cursor = 'grab';
+        //       document.onmousemove = null;
+        //       document.onmouseup = null;
+        //     };
+        // };
+    })
     getEle("#tab_txt2img").appendChild(Elements.trans[0])
     getEle("#tab_img2img").appendChild(Elements.trans[1])
 }
 
+
+
+ 
+
 function clearPrompt(pageindex){
    
-     let textarea, container;
+     let textarea, container,ul
      if(pageindex==0){
         textarea=Elements.txtpromt;
         container=Elements.prompt
+        ul=Elements.txtul
      }else{
         textarea=Elements.imgpromt;
         container=Elements.prompt2
+        ul=Elements.imgul
      }
      textarea.value='';
      let tabs=container.querySelector(".oldsix-tab-nav").children
@@ -386,6 +457,7 @@ function clearPrompt(pageindex){
      btns.forEach(btn=>{
         btn.classList.remove('active')
      })
+     ul.innerHTML=''
   
 }
 
@@ -479,23 +551,284 @@ function initBtnsEvent(){
             elementprompt.focus(); 
             let str=Elements.RdtxtAreasEn[index].value
             str=Elements.txtStart[index].value+str+Elements.txtEnd[index].value
-            document.execCommand('insertText', false,str);   
+            document.execCommand('insertText', false,str);  
+             closeAotuCom() 
         })
     })
 
     
 }
+ 
+function getChineseIndex(str) {
+    let matches = str.match(/[\u4e00-\u9fa5]/g);
+    return matches ? matches.length : 0;
+}
 
 function translateText(text){
-    
-    let arr= text.split('#')
-    let elementprompt=arr[1]=='True' ? Elements.imgpromt : Elements.txtpromt
-    updatatextToTextArea(elementprompt,arr[0].toLowerCase())
+    debugger
+    text=JSON.parse(text)
+    let ul=isTxtPage()? Elements.txtul : Elements.imgul;
+    let elementprompt=getCurrentPromptsEle()
+    if(text.origintext.includes("#[")||text.origintext.includes("<lora")) {
+        addLi(ul,text.origintext,text.origintext)   
+        updatatextToTextArea(elementprompt,text.origintext)    
+        return
+    }
+    if(!text||!text.translate) return
+   
+
+    let cn,en
+    let translate=text.translate.replaceAll('，',',')
+    let origintext=text.origintext.replaceAll('，',',')  
+    if(getChineseIndex(translate)>getChineseIndex(origintext)){
+        cn=translate
+        en=origintext
+    }
+    else{
+        cn=origintext
+        en=translate
+    }
+    if(cn){      
+        let arrcn=cn.split(',').filter(Boolean);
+        let arren=en.split(',').filter(Boolean);
+ 
+        for (let i = 0; i < arrcn.length; i++) {
+       
+            addLi(ul,arrcn[i].trim(),arren[i].trim().toLowerCase())        
+        }
+        updatatextToTextArea(elementprompt,en.toLowerCase())    
+    }
  
 }
 
-onUiLoaded(()=> {
+function addLi(parent,cn,en,btn=null){
+   let li=CreateEle('li',parent,'','')
+   li.setAttribute("draggable",'true')
+    let data={
+        en,
+        w:1.0,
+        btn,
+        li,     
+    }
+ 
+    if(!btn){
+        if(~en.indexOf(':')){      
+            let splitstartIndex=en.lastIndexOf(':')
+            data.w=en.substring(splitstartIndex+1, en.length-1);     
+        }
+     
+     
+    }
   
+   li.dataset.en=en 
+   selectPrompts[cn]={...data}
+   let calculate =CreateEle('span',li,'alculate','')
+   let addw =CreateEle('span',calculate,'add','+')
+   let subw =CreateEle('span',calculate,'sub','-')
+   let content =CreateEle('span',li,'content',cn)
+   let close =CreateEle('span',li,'close','x')
+   close.onclick=function(e){
+       e.stopPropagation();
+          delLi(li,cn)
+   } 
+    addw.onclick = function (e) {
+        e.stopPropagation();
+        ModifyWeidht(li,cn)
+ 
+    } 
+    subw.onclick = function (e) {
+        e.stopPropagation();
+        ModifyWeidht(li,cn,false)
+       
+    } 
+    li.onmouseover=function(){
+        hoverLi(li.dataset.en)
+    }
+    li.onmouseout=function(){
+        let textarea =getCurrentPromptsEle()
+        textarea.selectionStart = 0;
+        textarea.selectionEnd = 0;
+    }
+  
+    li.addEventListener('dragstart', handleDragStart, false);
+    li.addEventListener('dragleave', handleDragLeave, false);
+    li.addEventListener('dragend', handleDragEnd, false);
+    
+ 
+
+}
+ 
+var dragSrcEl = null;
+var initialX;
+var dragTarget;
+ 
+
+function handleDragStart(e) {
+    dragSrcEl = this;
+    initialX=e.clientX;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', this.outerHTML);
+  }
+  
+ 
+function handleDragLeave(e) {
+    let target = this;
+    if (target !== dragSrcEl && target.tagName === 'LI') {
+        const currentX = e.clientX;
+        const deltaX = currentX - initialX;
+        if (deltaX > 0) {
+            // 向右拖动     
+            target.after(dragSrcEl)
+        } else if (deltaX < 0) {
+            target.before(dragSrcEl)
+        }
+        dragTarget=target
+    }
+}
+
+function getguid() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0,
+          v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+  
+function handleDragEnd(e) {
+    let targetTex=dragTarget.dataset.en;
+    let originText=dragSrcEl.dataset.en;   
+    let guid=getguid()
+    let textarea =getCurrentPromptsEle()   
+    let temptext=textarea.value;
+    console.log(temptext);
+    temptext=temptext.replace(targetTex,guid)
+    temptext=temptext.replace(originText,targetTex)
+    temptext=temptext.replace(guid,originText)
+    textarea.value=temptext
+    updateInput(textarea)
+   
+}
+
+  
+
+function preciseAddOrSub(a, b,isadd=true) {
+    let  scale = 1e12; // 选取一个适当的缩放因子
+    if(isadd){
+         return (a * scale + b * scale) / scale;
+    }
+   
+    return  (a * scale - b * scale) / scale;
+}
+//isAdd 加权重
+function ModifyWeidht(domli,cnkey,isAdd=true){
+    let selectObj = selectPrompts[cnkey]
+    let oldw = selectObj.w
+   if (isAdd&&oldw >= 2 ) return
+   if (!isAdd&&oldw <=0.1) return
+   let domcontent=domli.querySelector('.content')
+
+ 
+   selectObj.w=preciseAddOrSub(selectObj.w,0.1,isAdd)
+ 
+      let newen=selectObj.en
+      let newcn=domcontent.textContent
+       
+      if(~selectObj.en.indexOf('<lora')) {
+        newen=selectObj.en.replace(':'+oldw,':'+selectObj.w)
+        newcn=newcn.replace(':'+oldw,':'+selectObj.w)
+          
+      } 
+      else if(oldw!=1){
+        if(selectObj.w==1){
+            newen = selectObj.en.replace("(", "").replace(")", "").replace(":" + oldw, "")
+            newcn = cnkey.replace("(", "").replace(")", "").replace(":" + oldw, "")
+        }
+        else{
+            newen=selectObj.en.replace(oldw,selectObj.w)
+            newcn=newcn.replace(oldw,selectObj.w)
+        }
+      }
+
+      else if(oldw==1) {    
+        
+        newen=`(${newen}:${selectObj.w})`
+        newcn=`(${newcn}:${selectObj.w})`
+      }
+      domcontent.textContent=newcn
+      let elepormpt=getCurrentPromptsEle()
+      elepormpt.value=elepormpt.value.replace(selectObj.en,newen)
+      selectObj.en=newen
+      domli.dataset.en=newen
+       
+}
+
+
+  
+
+function delLi(domli,cnkey){  
+   let btn=selectPrompts[cnkey].btn 
+   if(btn){
+       btn.classList.toggle("active")
+       toggleNavCss(btn)    
+   }
+   let elementprompt =getCurrentPromptsEle()
+   elementprompt.value= elementprompt.value.replace(selectPrompts[cnkey].en+',','');     
+   domli.parentNode.removeChild(domli)
+   delete selectPrompts[cnkey]
+}
+
+ 
+
+function hoverLi(searchText) {
+    let textarea =getCurrentPromptsEle()
+    const text = textarea.value;
+    // 寻找 searchText 在文本中的位置
+    const startIndex = text.indexOf(searchText);
+    if (startIndex !== -1) {
+        const endIndex = startIndex + searchText.length;    
+        // 设置选择范围
+        textarea.selectionStart = startIndex;
+        textarea.selectionEnd = endIndex;
+        // 让文本框获取焦点
+        textarea.focus();
+        return[startIndex,endIndex]
+    }
+    return null
+   
+}
+
+
+
+function isTxtPage(){
+   return window.getComputedStyle(Elements.tabtxt).display=='block'
+}
+
+function getCurrentPromptsEle(){
+    let res=isTxtPage();
+    let el=res?Elements.txtpromt:Elements.imgpromt 
+    return el
+ }
+ 
+
+function initTrans(){
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Alt') {  
+            event.preventDefault()
+            let txtdisplay = window.getComputedStyle(Elements.tabtxt).display;
+            let imgdisplay = window.getComputedStyle(Elements.tabimg).display;       
+            if (txtdisplay === 'block') {
+                   Elements.trans[0].classList.toggle('six-hide')
+                   Elements.trans[0].querySelector('textarea').focus()
+            }
+            if (imgdisplay === 'block') {
+                Elements.trans[1].classList.toggle('six-hide')
+                Elements.trans[1].querySelector('textarea').focus()
+            }
+        }
+    });
+}
+
+onUiLoaded(()=> {
     initData()
 })
 
@@ -504,20 +837,7 @@ function initData(){
     loadClearbtn()    
     initBtnsEvent() 
     loadCustomUI() 
-    document.addEventListener('keydown', function (event) {
-        if (event.key === 'F1') {  
-            let txtdisplay = window.getComputedStyle(Elements.tabtxt).display;
-            let imgdisplay = window.getComputedStyle(Elements.tabimg).display;
-            if (txtdisplay === 'block') {
-                   Elements.trans[0].classList.toggle('six-hide')
-            }
-            if (imgdisplay === 'block') {
-                Elements.trans[1].classList.toggle('six-hide')
-            }
-        }
-    });
-    
-   
+    initTrans()
 }
 
 

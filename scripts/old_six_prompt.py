@@ -58,7 +58,7 @@ def get_content(text):
         localtran=bytes.fromhex('68747470733A2F2F646963742E796F7564616F2E636F6D2F772F') 
         localtran=localtran.decode()
         response = requests.get(localtran+text)
-        if response.status_code == 200:       
+        if  response.status_code==200:       
             return response.text
         else:
             print(f"err_code：{response.status_code}")
@@ -66,6 +66,8 @@ def get_content(text):
     except requests.exceptions.RequestException as e:
         print(f"err：{e}")
         return None
+
+   
 
 def tanslate(cntext):
     html_content = get_content(cntext)
@@ -145,8 +147,12 @@ class Script(scripts.Script):
                                         
             
             def tanslatePromp(text):
-                text=tanslate(text)
-                return text+'#'+str(is_img2img),''           
+                en=tanslate(text)
+                data={
+                      'origintext':text,
+                      'translate':en,
+                }
+                return json.dumps(data,ensure_ascii=False),''
             def randomPrompt():     
                 random.seed(getSeed())
                 self.randomIndex= random.randint(0,len(self.rdlist)-1)
