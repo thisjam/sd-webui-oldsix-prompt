@@ -403,28 +403,32 @@ function move(){
         else{
             Elements.imgul=ul
         }
-        // item.onmousedown = function(event) {
-        //     // 获取div当前的x和y坐标
-        //     var x = event.clientX - item.offsetLeft;
-        //     var y = event.clientY - item.offsetTop;
-        //     item.style.cursor = 'grabbing';
-        //     document.onmousemove = function(event) {
-        //       // 获取鼠标当前的位置
-        //       var newX = event.clientX - x;
-        //       var newY = event.clientY - y;
+        item.onmousedown = function(event) {
+           
+            let istriggel=event.target.classList.contains("old-six-traninput");
+            if(!istriggel)return
+                
+            // 获取div当前的x和y坐标
+            var x = event.clientX - item.offsetLeft;
+            var y = event.clientY - item.offsetTop;
+            item.style.cursor = 'grabbing';
+            document.onmousemove = function(event) {
+              // 获取鼠标当前的位置
+              var newX = event.clientX - x;
+              var newY = event.clientY - y;
           
-        //       // 设置div的新位置
-        //       item.style.left = newX + 'px';
-        //       item.style.top = newY + 'px';
-        //     };
+              // 设置div的新位置
+              item.style.left = newX + 'px';
+              item.style.top = newY + 'px';
+            };
           
-        //     document.onmouseup = function() {
-        //       // 当鼠标松开时，移除mousemove和mouseup事件，以防止继续拖动
-        //       item.style.cursor = 'grab';
-        //       document.onmousemove = null;
-        //       document.onmouseup = null;
-        //     };
-        // };
+            document.onmouseup = function() {
+              // 当鼠标松开时，移除mousemove和mouseup事件，以防止继续拖动
+              item.style.cursor = 'grab';
+              document.onmousemove = null;
+              document.onmouseup = null;
+            };
+        };
     })
     getEle("#tab_txt2img").appendChild(Elements.trans[0])
     getEle("#tab_img2img").appendChild(Elements.trans[1])

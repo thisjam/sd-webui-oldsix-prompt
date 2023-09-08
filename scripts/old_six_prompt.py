@@ -113,11 +113,11 @@ class Script(scripts.Script):
                 eid='oldsix-prompt1'     
                 tid='oldsix-area1'           
             with gr.Row(elem_id=eid):
-                       with gr.Accordion(label="SixGod_K提示词 v1.60",open=False):
+                       with gr.Accordion(label="SixGod_K提示词 v1.63",open=False):
                              gr.HTML('<a href="https://github.com/thisjam/sd-webui-oldsix-prompt/">【使用说明书】</a>')
                             
                              textarea=gr.TextArea(self.json,elem_id=tid,visible=False)
-                             traninput=gr.Textbox(elem_classes="old-six-traninput six-hide",show_label="",placeholder="输入中文后按回车翻译")
+                             traninput=gr.Textbox(elem_classes="old-six-traninput",show_label="",placeholder="输入中文后按回车翻译,[ALT]键呼出/隐藏")
                              tcache=gr.Textbox(elem_classes="old-six-tcache",visible=False)
                             
                              with gr.Column(scale=4,elem_id="oldsix-optit"):
