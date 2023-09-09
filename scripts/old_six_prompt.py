@@ -1,10 +1,10 @@
-﻿import modules.scripts as scripts
-import gradio as gr
+﻿import gradio as gr
 import os,json
 import json
 import random
 import re
 from bs4 import BeautifulSoup
+from modules import shared,scripts,script_callbacks
 current_script = os.path.realpath(__file__)
 current_folder = os.path.dirname(current_script)   
 work_basedir = os.path.dirname(current_folder)   #本插件目录  
@@ -88,13 +88,26 @@ def tanslate(cntext):
              return text.strip()   
     return None     
 
+
+
+
+
+
+
+
+
+
+# showtrans = getattr(shared.opts, "oldsix_prompts",True)  
+
+
 class Script(scripts.Script):    
         rdlist=loadRandomList()
         json= LoadTagsFile()
         randomIndex=0
         txtprompt=None
         isLockPrompt=False
-        
+       
+         
         def after_component(self, component, **kwargs):
            if(component.elem_id=="txt2img_prompt" or component.elem_id=="img2img_prompt"):
                self.txtprompt=component
@@ -111,13 +124,15 @@ class Script(scripts.Script):
                 tid='oldsix-area2'
             else:
                 eid='oldsix-prompt1'     
-                tid='oldsix-area1'           
+                tid='oldsix-area1'      
+                
+                
             with gr.Row(elem_id=eid):
-                       with gr.Accordion(label="SixGod_K提示词 v1.63",open=False):
+                       with gr.Accordion(label="SixGod_K提示词 v1.64",open=False):
                              gr.HTML('<a href="https://github.com/thisjam/sd-webui-oldsix-prompt/">【使用说明书】</a>')
                             
                              textarea=gr.TextArea(self.json,elem_id=tid,visible=False)
-                             traninput=gr.Textbox(elem_classes="old-six-traninput",show_label="",placeholder="输入中文后按回车翻译,[ALT]键呼出/隐藏")
+                             traninput=gr.Textbox(elem_classes="old-six-traninput",visible=False,show_label="",placeholder="输入中文后按回车翻译,[ALT+Q]键呼出/隐藏")
                              tcache=gr.Textbox(elem_classes="old-six-tcache",visible=False)
                             
                              with gr.Column(scale=4,elem_id="oldsix-optit"):

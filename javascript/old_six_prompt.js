@@ -83,7 +83,7 @@ function CreateEle(type,parentDom,css,html){
         if(elementprompt.value.includes(str+':')){
             const teststr=`${str},|\\(${str}:\\d+\\.\\d+\\),`
             const regex =new RegExp(teststr);    
-            console.log(regex.test(elementprompt.value));       
+            // console.log(regex.test(elementprompt.value));       
             elementprompt.value= elementprompt.value.replace(regex,'');
              
         }
@@ -569,7 +569,7 @@ function getChineseIndex(str) {
 }
 
 function translateText(text){
-    debugger
+     
     text=JSON.parse(text)
     let ul=isTxtPage()? Elements.txtul : Elements.imgul;
     let elementprompt=getCurrentPromptsEle()
@@ -704,7 +704,7 @@ function handleDragEnd(e) {
     let guid=getguid()
     let textarea =getCurrentPromptsEle()   
     let temptext=textarea.value;
-    console.log(temptext);
+    // console.log(temptext);
     temptext=temptext.replace(targetTex,guid)
     temptext=temptext.replace(originText,targetTex)
     temptext=temptext.replace(guid,originText)
@@ -730,33 +730,28 @@ function ModifyWeidht(domli,cnkey,isAdd=true){
    if (isAdd&&oldw >= 2 ) return
    if (!isAdd&&oldw <=0.1) return
    let domcontent=domli.querySelector('.content')
-
- 
    selectObj.w=preciseAddOrSub(selectObj.w,0.1,isAdd)
  
       let newen=selectObj.en
       let newcn=domcontent.textContent
+   
        
       if(~selectObj.en.indexOf('<lora')) {
         newen=selectObj.en.replace(':'+oldw,':'+selectObj.w)
         newcn=newcn.replace(':'+oldw,':'+selectObj.w)
           
       } 
-      else if(oldw!=1){
-        if(selectObj.w==1){
-            newen = selectObj.en.replace("(", "").replace(")", "").replace(":" + oldw, "")
-            newcn = cnkey.replace("(", "").replace(")", "").replace(":" + oldw, "")
-        }
-        else{
-            newen=selectObj.en.replace(oldw,selectObj.w)
-            newcn=newcn.replace(oldw,selectObj.w)
-        }
+      else if(selectObj.w!=1){
+          newen = selectObj.en.replace("(", "").replace(")", "").replace(":" + oldw, "")
+          newcn = domcontent.textContent.replace("(", "").replace(")", "").replace(":" + oldw, "")
+          newen=`(${newen}:${selectObj.w})`
+          newcn=`(${newcn}:${selectObj.w})`
+         
       }
-
-      else if(oldw==1) {    
-        
-        newen=`(${newen}:${selectObj.w})`
-        newcn=`(${newcn}:${selectObj.w})`
+      else if(selectObj.w==1) {      
+        newen = selectObj.en.replace("(", "").replace(")", "").replace(":" + oldw, "")
+        newcn = domcontent.textContent.replace("(", "").replace(")", "").replace(":" + oldw, "")
+         
       }
       domcontent.textContent=newcn
       let elepormpt=getCurrentPromptsEle()
@@ -813,23 +808,34 @@ function getCurrentPromptsEle(){
     return el
  }
  
-
-function initTrans(){
+function initTrans() {
     document.addEventListener('keydown', function (event) {
-        if (event.key === 'Alt') {  
-            event.preventDefault()
-            let txtdisplay = window.getComputedStyle(Elements.tabtxt).display;
-            let imgdisplay = window.getComputedStyle(Elements.tabimg).display;       
-            if (txtdisplay === 'block') {
-                   Elements.trans[0].classList.toggle('six-hide')
-                   Elements.trans[0].querySelector('textarea').focus()
-            }
-            if (imgdisplay === 'block') {
-                Elements.trans[1].classList.toggle('six-hide')
-                Elements.trans[1].querySelector('textarea').focus()
-            }
+        if (event.altKey && event.key === 'q') {
+
+            showTransUI();
         }
+
     });
+}
+
+function toggleDisplay(dom){
+    dom.style.display = dom.style.display === 'block' ? 'none' : 'block';
+}
+
+
+function showTransUI(){
+    let txtdisplay = window.getComputedStyle(Elements.tabtxt).display;
+    let imgdisplay = window.getComputedStyle(Elements.tabimg).display;   
+   
+    if (txtdisplay === 'block') {
+           toggleDisplay(Elements.trans[0])
+           Elements.trans[0].querySelector('textarea').focus()
+        
+    }
+    if (imgdisplay === 'block') {
+        toggleDisplay(Elements.trans[0])
+        Elements.trans[1].querySelector('textarea').focus()
+    }
 }
 
 onUiLoaded(()=> {
