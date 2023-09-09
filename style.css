@@ -80,11 +80,11 @@
  
 
  .six-hide{
-    display: none;
+    display: none!important;
  }
  
  .six-show{
-   display: block;
+   display: block!important;
 }
 
 #oldsix-optit{
