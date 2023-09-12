@@ -1,7 +1,15 @@
 ﻿
 
-# sd-webui-oldsix-prompt-dynamic
-### 本项目fork自[thisjam/sd-webui-oldsix-prompt](https://github.com/thisjam/sd-webui-oldsix-prompt)，主要为了配合[sd-dynamic-prompts](https://github.com/adieyal/sd-dynamic-prompts)（动态提示词）使用，修改了部分交互内容和动态提示语法，提高了动态提示词的使用效率，后续还有一些变体用法会更新到交互里，先立个flag
+# sd-webui-oldsix-prompt-dynamic v1.0.1
+### 本项目fork自[thisjam/sd-webui-oldsix-prompt](https://github.com/thisjam/sd-webui-oldsix-prompt)，主要为了配合[sd-dynamic-prompts](https://github.com/adieyal/sd-dynamic-prompts)（动态提示词）使用，修改了部分交互内容和动态提示语法，提高了动态提示词的使用效率
+
+> 原作者的项目也从1.3.2开始也有动态提示词了，就是语法不太一样，从功能上看基本没有差异
+> 
+> 目前只兼容原项目到1.3.3，后面的没再跟进了，如果对Dynamic Prompts没兴趣或者不想多安装插件的小伙伴，推荐使用原作者项目
+>
+> 如果想要深入使用Dynamic Prompts的小伙伴，推荐使用本插件，交互会更友好一些
+> 
+> 由于和原作功能冲突了，本来打算自用的，不过还是得到了一些小伙伴的正向反馈，那先立个flag，后续会把重心放到提示词的编辑和保存上，有其他好的建议各位小伙伴可以直接提~
 
 ### [视频教程 - B站](https://www.bilibili.com/video/BV1T94y167ft/?vd_source=c7e2d04d146ac6f462dbf5aeeeef691f)
 
