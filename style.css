@@ -3,7 +3,6 @@
    display: grid;
    grid-template-columns: repeat(auto-fit, minmax(30%, 1fr));
    gap: 15px;
-
 }
 
 
@@ -47,6 +46,7 @@
    z-index: 9999!important;
    transform: translateY(15px);
    width: max-content;
+   max-width: 800px; 
    line-height: 2em;
    word-wrap: normal;
    color:black;

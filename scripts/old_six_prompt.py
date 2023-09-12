@@ -23,7 +23,7 @@ def LoadTagsFile():
       traverse_dict(dic)
       obj=json.dumps(dic,ensure_ascii=False)       
      
-      return   obj                   
+      return obj                   
  
 def loadjsonfiles(path,dic):
     files = os.listdir( path ) 
@@ -61,7 +61,7 @@ def traverse_dict(d,clsName=None):
 class Script(scripts.Script):
         
         rdlist=loadRandomList()
-        json= LoadTagsFile()
+        json = LoadTagsFile()
         randomIndex=0
         txtprompt=None
         
@@ -70,7 +70,7 @@ class Script(scripts.Script):
                self.txtprompt=component
                             
         def title(self):
-                return "Old_Six"
+                return "Old_Six_For_Dynamic"
                
         def show(self, is_img2img):
                 return scripts.AlwaysVisible
@@ -83,8 +83,8 @@ class Script(scripts.Script):
                 eid='oldsix-prompt1'     
                 tid='oldsix-area1'           
             with gr.Row(elem_id=eid):
-                       with gr.Accordion(label="SixGod_K提示词 v1.33",open=False):
-                             gr.HTML('<a href="https://github.com/thisjam/sd-webui-oldsix-prompt/">【使用说明书】</a>')
+                       with gr.Accordion(label="SixGod_K提示词(Dynamic版 v1.0.1)",open=False):
+                             gr.HTML('插件改造自<a href="https://github.com/thisjam/sd-webui-oldsix-prompt/">【SixGod_K提示词】</a>，动态提示词需配合<a href="https://github.com/adieyal/sd-dynamic-prompts">【Dynamic Prompts插件】</a>一起使用，点击查看<a href="https://www.bilibili.com/video/BV1T94y167ft">【教程视频】</a>')
                              textarea=gr.TextArea(self.json,elem_id=tid,visible=False)
                              with gr.Row():
                                 btnreload = gr.Button('🔄',elem_classes="oldsix-reload sm secondary gradio-button svelte-1ipelgc")
