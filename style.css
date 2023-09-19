@@ -160,9 +160,8 @@
    top:25%;
    z-index: 99999!important;
    min-height: 200px!important; 
-   background: #00000094;
-   border-radius: 10px!important;
-   
+   border-radius: 10px !important;
+   background: linear-gradient(to right, #76767a, #41444c)
    
 }
 .old-six-traninput textarea{
@@ -213,6 +212,9 @@
    cursor: grab;
    box-shadow: 5px 5px 15px #741c1c;
    overflow: hidden;
+  
+  
+
 }
  
 .oldsix-ul li:hover .alculate{
@@ -256,6 +258,7 @@
 }
 .oldsix-ul li .content{
    margin: 0 20px 0 5px;
+   color: #fff;
 }
 
 .oldsix-ul li .close{
@@ -271,6 +274,10 @@
    color: red;
    cursor: pointer;
  
+}
+
+.oldsix-tips::after{
+  content: "[ALT+Q呼出翻译框]";
 }
 
 

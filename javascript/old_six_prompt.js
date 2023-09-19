@@ -774,6 +774,7 @@ function delLi(domli,cnkey){
    elementprompt.value= elementprompt.value.replace(selectPrompts[cnkey].en+',','');     
    domli.parentNode.removeChild(domli)
    delete selectPrompts[cnkey]
+   updateInput(elementprompt)
 }
 
  
@@ -810,7 +811,7 @@ function getCurrentPromptsEle(){
  
 function initTrans() {
     document.addEventListener('keydown', function (event) {
-        if (event.altKey && event.key === 'q') {
+        if (event.altKey && event.key.toLowerCase() === 'q') {
 
             showTransUI();
         }
@@ -833,7 +834,7 @@ function showTransUI(){
         
     }
     if (imgdisplay === 'block') {
-        toggleDisplay(Elements.trans[0])
+        toggleDisplay(Elements.trans[1])
         Elements.trans[1].querySelector('textarea').focus()
     }
 }
