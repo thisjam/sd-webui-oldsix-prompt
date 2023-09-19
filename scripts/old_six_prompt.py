@@ -128,7 +128,7 @@ class Script(scripts.Script):
                 
                 
             with gr.Row(elem_id=eid):
-                       with gr.Accordion(label="SixGod_K提示词 v1.64",open=False):
+                       with gr.Accordion(label="SixGod_K提示词 v1.65",open=False):
                              gr.HTML('<a class="oldsix-tips" href="https://github.com/thisjam/sd-webui-oldsix-prompt/">【使用说明书】')
                             
                              textarea=gr.TextArea(self.json,elem_id=tid,visible=False)
