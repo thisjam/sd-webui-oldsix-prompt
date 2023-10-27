@@ -451,6 +451,7 @@ function clearPrompt(pageindex){
         ul=Elements.imgul
      }
      textarea.value='';
+     updateInput(textarea)
      let tabs=container.querySelector(".oldsix-tab-nav").children
      let btns=container.querySelectorAll(".oldsix-btn.active")
      
@@ -469,6 +470,7 @@ function clearNPrompt(pageindex){
    
     let textarea=pageindex=='1'?Elements.imgnpromt:Elements.txtnpromt;
     textarea.value='';
+    updateInput(textarea)
 }
 
 function loadClearbtn(){
@@ -571,8 +573,11 @@ function getChineseIndex(str) {
 function translateText(text){
      
     text=JSON.parse(text)
+    
     let ul=isTxtPage()? Elements.txtul : Elements.imgul;
-    let elementprompt=getCurrentPromptsEle()
+    let elementprompt=getCurrentPromptsEle()   
+    text.origintext = text.origintext.trim();
+      
     if(text.origintext.includes("#[")||text.origintext.includes("<lora")) {
         addLi(ul,text.origintext,text.origintext)   
         updatatextToTextArea(elementprompt,text.origintext)    
@@ -602,10 +607,13 @@ function translateText(text){
         }
         updatatextToTextArea(elementprompt,en.toLowerCase())    
     }
+
+    
  
 }
 
 function addLi(parent,cn,en,btn=null){
+    
    let li=CreateEle('li',parent,'','')
    li.setAttribute("draggable",'true')
     let data={
@@ -629,7 +637,8 @@ function addLi(parent,cn,en,btn=null){
    let calculate =CreateEle('span',li,'alculate','')
    let addw =CreateEle('span',calculate,'add','+')
    let subw =CreateEle('span',calculate,'sub','-')
-   let content =CreateEle('span',li,'content',cn)
+   let content =CreateEle('span',li,'content','')
+   content.textContent=cn
    let close =CreateEle('span',li,'close','x')
    close.onclick=function(e){
        e.stopPropagation();
