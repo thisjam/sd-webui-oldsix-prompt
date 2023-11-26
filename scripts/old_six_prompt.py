@@ -19,7 +19,15 @@ def LoadTagsFile():
       traverse_dict(dic)
       obj=json.dumps(dic,ensure_ascii=False)       
      
-      return   obj                   
+      return   obj 
+
+def APIResponse():    
+      dic={}
+      loadjsonfiles(path1,dic)
+      loadjsonfiles(path2,dic)
+      traverse_dict(dic)
+     
+      return dic
  
 def loadjsonfiles(path,dic):
     files = os.listdir( path ) 
