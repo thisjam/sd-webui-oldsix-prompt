@@ -830,6 +830,7 @@ function initTrans() {
 
 function toggleDisplay(dom){
     dom.style.display = dom.style.display === 'block' ? 'none' : 'block';
+    
 }
 
 
@@ -839,6 +840,7 @@ function showTransUI(){
    
     if (txtdisplay === 'block') {
            toggleDisplay(Elements.trans[0])
+        //    old-six-traninput
            Elements.trans[0].querySelector('textarea').focus()
         
     }

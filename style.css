@@ -161,7 +161,8 @@
    z-index: 99999!important;
    min-height: 200px!important; 
    border-radius: 10px !important;
-   background: linear-gradient(to right, #76767a, #41444c)
+   background: linear-gradient(to right, #76767a, #41444c);
+   display: none;
    
 }
 .old-six-traninput textarea{
