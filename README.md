@@ -1,13 +1,13 @@
 ﻿<!--
  * @Author: thisjam 3213441409@qq.com
  * @Date: 2024-03-24 15:56:01
- * @LastEditors: thisjam 3213441409@qq.com
- * @LastEditTime: 2024-03-28 10:11:16
- * @FilePath: \webui\extensions\sd-webui-oldsix-prompt\README.md
+ * @LastEditors: Six_God_K
+ * @LastEditTime: 2024-04-07 16:24:56
+ * @FilePath: \undefinedg:\project\sd.webui\webui\extensions\sd-webui-oldsix-prompt\README.md
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
 
-# sd-webui-oldsix_prompt v1.66
+# sd-webui-oldsix_prompt v1.70
 ### 老版词库 @路过银河&网上收集
 ### 新词库由群里小伙伴 @麻瓜 @万碎爷 @元一斤 整理
 ### 开源不易，别跑到Issues发牢骚，有重要的事@我QQ，前段时间忙，群里那么多人真的管不过来，大家文明交流 ###
@@ -34,17 +34,9 @@
 ### 使用方法
   *  左键输入正向提示框、 右键输入负向提示框
   *  支持自定义词库【把你自己整理词库文件放在yours文件夹下，不受更新会被覆盖影响】
-  *  支持随机抽卡 【灵感模式、分类随机模式】
   *  支持翻译、权重调整、位置调整。Alt+Q键呼出隐藏面板
-  *  支持动态随机提示词    本插件专属语法示例：#[red#blue#yellow] 或#[日常服饰]、 #[红色类#黄色类]
+  *  支持动态随机提示词    本插件专属语法示例：#[red,blue,yellow] 
   
   ---
-  ##### 展示1  
-  ![Image text](imgs/1.png)
-  ##### 展示2 
-  ![Image text](imgs/2.png)
-  ##### 展示3
-  ![Image text](imgs/3.png)
-  ##### 展示4
-  ![Image text](imgs/4.png)
+
 
