@@ -13,7 +13,6 @@ import os,json
 import json
 import random
 import re
-from bs4 import BeautifulSoup
 from modules import shared,scripts,script_callbacks
 import requests
 from fastapi import FastAPI
@@ -47,38 +46,8 @@ def loadjsonfiles(path,dic):
                         res=json.loads(f.read())                       
                         dic[filename]=res
 
-def get_content(text):
-    try:  
-        localtran=bytes.fromhex('68747470733A2F2F646963742E796F7564616F2E636F6D2F772F') 
-        localtran=localtran.decode()
-        response = requests.get(localtran+text)
-        if  response.status_code==200:       
-            return response.text
-        else:
-            print(f"err_code：{response.status_code}")
-            return None
-    except requests.exceptions.RequestException as e:
-        print(f"err：{e}")
-        return None
-
-def tanslate(cntext):
-    html_content = get_content(cntext)
-    if html_content is not None: 
-        dom = BeautifulSoup(html_content, 'html.parser')      
-        ydhtml=dom.find('div',id='fanyiToggle')
-        if(ydhtml):
-            div=ydhtml.find('div',class_='trans-container')
-            childhtml=div.find_all('p')
-            return childhtml[1].get_text()
-        shot=dom.find('a',class_='search-js')
-        if(shot):
-              return shot.text.strip()
-        tWebTrans=dom.find('div',id='tWebTrans')
-        if(tWebTrans!=None):             
-             span=tWebTrans.find('span')         
-             text=span.next_sibling.replace("\n", "")  
-             return text.strip()   
-    return None     
+ 
+    
 
 def contains_chinese(s):
     pattern = re.compile(r'[\u4e00-\u9fff]+')
