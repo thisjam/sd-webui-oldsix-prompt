@@ -2,7 +2,7 @@
 Author: Six_God_K
 Date: 2024-03-24 15:56:01
 LastEditors: Six_God_K
-LastEditTime: 2024-04-04 10:26:16
+LastEditTime: 2024-04-14 18:48:58
 FilePath: \webui\extensions\sd-webui-oldsix-prompt\scripts\old_six_prompt.py
 Description: 
 
@@ -13,10 +13,19 @@ import os,json
 import json
 import random
 import re
+from bs4 import BeautifulSoup
 from modules import shared,scripts,script_callbacks
 import requests
-from fastapi import FastAPI
-from  scripts.transbd import get as transbd
+from fastapi import FastAPI,Request
+import sys 
+
+
+try:
+    from transerver import Translator,baidu,freebd
+except:
+    transerver_path = os.path.join(os.path.dirname(__file__), "transerver")
+    sys.path.append(transerver_path)
+    import Translator,baidu,freebd
 
 
 current_script = os.path.realpath(__file__)
@@ -47,21 +56,38 @@ def loadjsonfiles(path,dic):
                         dic[filename]=res
 
  
-    
-
 def contains_chinese(s):
     pattern = re.compile(r'[\u4e00-\u9fff]+')
     return bool(pattern.search(s))
 
 
-
+def translate(text):
+    if(transObj['server']=='free'):
+         trans_server=freebd.FreeBDTranslator()
+         return Translator.translate_text(trans_server, None,None,text)
+    else:
+         trans_server=baidu.BaiduTranslator()
+         return Translator.translate_text(trans_server, transObj['appid'],transObj['secret'],text)
 
 
 
 # showtrans = getattr(shared.opts, "oldsix_prompts",True)  
 
 
+ 
+def extract_lora(prompt):
+    pattern = r'<lora.*?>'
+    lora_arr = re.findall(pattern, prompt)
+    prompt = re.sub(pattern, '', prompt)
+    return lora_arr, prompt
 
+def add_lora(lora_arr,prompt):
+    for index, value in enumerate(lora_arr):
+      prompt += value + ',' if index != len(lora_arr)-1 else value
+    return prompt
+
+
+   
 class Script(scripts.Script):    
  
          
@@ -81,12 +107,16 @@ class Script(scripts.Script):
         def before_process(self, p, *args):       
             p.prompt= extract_tags(p.prompt)
             p.negative_prompt= extract_tags(p.negative_prompt)
+            prompt_lora_arr,p.prompt=extract_lora(p.prompt)
+            nprompt_lora_arr,p.negative_prompt=extract_lora(p.negative_prompt)
+           
             # if(transMode==False):
             if(contains_chinese(p.prompt)==True):      
-                      p.prompt=transbd(p.prompt)
+                      p.prompt=translate(p.prompt)
             if(contains_chinese(p.negative_prompt)==True):    
-                      p.negative_prompt=transbd(p.negative_prompt)|''
-           
+                      p.negative_prompt=translate(p.negative_prompt)|''
+            p.prompt=add_lora(prompt_lora_arr,p.prompt)
+            p.negative_prompt=add_lora(nprompt_lora_arr,p.negative_prompt)
                    
         # def process(self, p, *args): 
         #     print(p.prompt)
@@ -114,7 +144,11 @@ def extract_tags(text):
         text = re.sub(pattern, rdtext, text,count=1)
     return text
     
-
+transObj={
+     'server':'',
+     'appid':'',
+     'secret':''
+}
  
 def on_app_started(_: gr.Blocks, app: FastAPI): 
     @app.get("/api/sixgod/getJsonFiles")
@@ -125,6 +159,23 @@ def on_app_started(_: gr.Blocks, app: FastAPI):
     async def setmode(isEn):
        global transMode
        transMode=isEn
+
+    @app.post("/api/sixgod/setTransServer")
+    async def setTransServer(request:Request):
+        postData=await request.json()
+        transObj['server']=postData['server']
+        transObj['appid']=postData['appid']
+        transObj['secret']=postData['secret']
+        return 'ok'
+       
+    @app.get("/api/sixgod/testTransServer")
+    async def testTransServer():
+        trans_text = translate('苹果')
+        if (trans_text!='apple'):
+            trans_text='翻译失败'
+        else:
+            trans_text='接口正常'      
+        return trans_text
       
         
 
