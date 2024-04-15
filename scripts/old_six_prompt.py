@@ -13,7 +13,6 @@ import os,json
 import json
 import random
 import re
-from bs4 import BeautifulSoup
 from modules import shared,scripts,script_callbacks
 import requests
 from fastapi import FastAPI,Request
