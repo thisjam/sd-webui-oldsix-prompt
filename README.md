@@ -2,12 +2,12 @@
  * @Author: thisjam 3213441409@qq.com
  * @Date: 2024-03-24 15:56:01
  * @LastEditors: Six_God_K
- * @LastEditTime: 2024-04-14 18:52:37
+ * @LastEditTime: 2024-04-16 12:43:24
  * @FilePath: \webui\extensions\sd-webui-oldsix-prompt\README.md
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
 
-# sd-webui-oldsix_prompt v1.71
+# sd-webui-oldsix_prompt v1.72
 ### 老版词库 @路过银河&网上收集
 ### 新词库由群里小伙伴 @麻瓜 @万碎爷 @元一斤 整理
 ### 开源不易，别跑到Issues发牢骚，有重要的事@我QQ，前段时间忙，群里那么多人真的管不过来，大家文明交流 ###
