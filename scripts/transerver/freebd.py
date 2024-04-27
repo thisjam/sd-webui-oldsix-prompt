@@ -2,8 +2,8 @@
 Author: Six_God_K
 Date: 2024-04-13 15:23:00
 LastEditors: Six_God_K
-LastEditTime: 2024-04-13 15:51:19
-FilePath: \ComfyUI\custom_nodes\comfyui-sixgod_prompt\transerver\freebd.py
+LastEditTime: 2024-04-26 22:05:30
+FilePath: \webui\extensions\sd-webui-oldsix-prompt\scripts\transerver\freebd.py
 Description: 
 
 Copyright (c) 2024 by ${git_name_email}, All Rights Reserved. 
@@ -13,18 +13,16 @@ import requests
 import json
 
 class FreeBDTranslator(Translator.TranslatorInterface):
-    def __init__(self):
-        pass
-    def translate(self,appid:str,secretKey:str,text: str,headers, lang_from: str, lang_to: str) -> str:  
-        url='https://fanyi.baidu.com/transapi'    
+    def translate(self,text) -> str:  
+        url='https://fanyi.baidu.com/transapi'   
         postdata={
-            "from": "zh",
-            "to": "en",
+            "from": self.lang_from,
+            "to": self.lang_to,
             "query": text,
             "source": "txt",
         }
         try:    
-            res= requests.post(url,headers=headers,data=postdata)   
+            res= requests.post(url,headers=self.headers,data=postdata)   
             return self.decodeText(res,text)
 
         except requests.exceptions.RequestException as e:
@@ -54,8 +52,8 @@ class FreeBDTranslator(Translator.TranslatorInterface):
 
 
 if __name__ == '__main__':
-    text="今天天气非常不错"
+    text="一个女孩在雨中行走"
     baidu_translator = FreeBDTranslator()
-    res = Translator.translate_text(baidu_translator, None,None,text)
+    res = Translator.translate_text(baidu_translator,text)
     print(res)
         

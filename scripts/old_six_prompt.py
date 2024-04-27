@@ -2,7 +2,7 @@
 Author: Six_God_K
 Date: 2024-03-24 15:56:01
 LastEditors: Six_God_K
-LastEditTime: 2024-04-14 18:48:58
+LastEditTime: 2024-04-27 11:46:16
 FilePath: \webui\extensions\sd-webui-oldsix-prompt\scripts\old_six_prompt.py
 Description: 
 
@@ -20,11 +20,11 @@ import sys
 
 
 try:
-    from transerver import Translator,baidu,freebd
+    from transerver import Translator,baidu,freebd,llmTranslate,llm
 except:
     transerver_path = os.path.join(os.path.dirname(__file__), "transerver")
     sys.path.append(transerver_path)
-    import Translator,baidu,freebd
+    import Translator,baidu,freebd,llmTranslate,llm
 
 
 current_script = os.path.realpath(__file__)
@@ -61,10 +61,13 @@ def contains_chinese(s):
 
 
 def translate(text):
-    if(transObj['server']=='free'):
+     if(transObj['server']=='free'):
          trans_server=freebd.FreeBDTranslator()
-         return Translator.translate_text(trans_server, None,None,text)
-    else:
+         return Translator.translate_text(trans_server,text)
+     elif(transObj['server']=='llm'):
+         trans_server=llmTranslate.LLMTranslator()
+         return Translator.translate_text(trans_server,text,transObj['llmName'])
+     elif(transObj['server']=='baidu'):
          trans_server=baidu.BaiduTranslator()
          return Translator.translate_text(trans_server, transObj['appid'],transObj['secret'],text)
 
@@ -146,7 +149,8 @@ def extract_tags(text):
 transObj={
      'server':'',
      'appid':'',
-     'secret':''
+     'secret':'',
+     'llmName':''
 }
  
 def on_app_started(_: gr.Blocks, app: FastAPI): 
@@ -165,16 +169,24 @@ def on_app_started(_: gr.Blocks, app: FastAPI):
         transObj['server']=postData['server']
         transObj['appid']=postData['appid']
         transObj['secret']=postData['secret']
+        transObj['llmName']=postData['llmName']
         return 'ok'
        
     @app.get("/api/sixgod/testTransServer")
     async def testTransServer():
         trans_text = translate('苹果')
-        if (trans_text!='apple'):
+        if (trans_text.lower()!='apple'):
             trans_text='翻译失败'
         else:
             trans_text='接口正常'      
         return trans_text
+    
+    @app.post("/api/sixgod/imaginePrompt")
+    async def imaginePrompt(request:Request):#不注明类型无法请求 422
+        post = await request.json()
+        Preset='你是一名AI提示词工程师，用提供的关键词构思一副精美的构图画面，只需要提示词，不要你的感受，自定义风格、场景、装饰等，尽量详细，用中文回复'
+        res=llm.chat(post,transObj['llmName'],Preset)
+        return res
       
         
 
