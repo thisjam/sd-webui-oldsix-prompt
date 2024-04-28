@@ -1,3 +1,13 @@
+<!--
+ * @Author: Six_God_K
+ * @Date: 2024-04-15 11:58:50
+ * @LastEditors: Six_God_K
+ * @LastEditTime: 2024-04-28 21:04:04
+ * @FilePath: \comfyui-sixgod_promptg:\project\sd.webui\webui\extensions\sd-webui-oldsix-prompt\README.md
+ * @Description: 
+ * 
+ * Copyright (c) 2024 by ${git_name_email}, All Rights Reserved. 
+-->
 
 # v1.74
 ### 老版词库 @路过银河&网上收集
@@ -15,11 +25,11 @@
 
 # <img src="imgs/wx.jpg" width="300" height="400" />
 ### 插件安装
-  * comfyui版本 
+  * webui、forge版本 
   ```sh
      https://github.com/thisjam/sd-webui-oldsix-prompt.git
   ```
-  * webui、forge版本 
+  * comfyui版本 
  ```sh
     https://github.com/thisjam/comfyui-sixgod_prompt.git
  ```
