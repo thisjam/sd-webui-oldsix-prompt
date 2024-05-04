@@ -2,7 +2,7 @@
 Author: Six_God_K
 Date: 2024-04-26 22:05:49
 LastEditors: Six_God_K
-LastEditTime: 2024-04-27 11:26:14
+LastEditTime: 2024-05-03 17:24:08
 FilePath: \webui\extensions\sd-webui-oldsix-prompt\scripts\transerver\llm.py
 Description: 
 
@@ -19,23 +19,28 @@ try:
       current_script = os.path.realpath(__file__)
       plug_script=os.path.dirname(os.path.dirname(os.path.dirname(current_script)))
       extension_path = os.path.join(plug_script,'models')
-      def chat(question,modelName="qwen1_5-4b-chat-q2_k",Preset="Translate Chinese into English"):
+      def chat(question,**kwargs):
         llm = Llama(
-            model_path=os.path.join(extension_path,modelName)+'.gguf',
+            model_path=os.path.join(extension_path,kwargs['llmName'])+'.gguf',
+            n_gpu_layers=int(kwargs['n_gpu_layers']),
         )
         res=llm.create_chat_completion(
             messages = [
-                {"role": "system", "content":Preset},
+                {"role": "system", "content":kwargs['preset']},
                 {
                     "role": "user",
                     "content": question
                 }
             ],
-            temperature=1.2
+            temperature=float(kwargs['temperature'])
 
         )
     
         return(res['choices'][0]["message"]['content'])
+      
+      def chat_imagine(question,settings):
+          return chat(question,**settings)
+          
 
 
 except Exception as e:

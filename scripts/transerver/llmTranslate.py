@@ -2,7 +2,7 @@
 Author: Six_God_K
 Date: 2024-04-13 12:54:31
 LastEditors: Six_God_K
-LastEditTime: 2024-04-26 22:07:07
+LastEditTime: 2024-05-03 17:06:36
 FilePath: \webui\extensions\sd-webui-oldsix-prompt\scripts\transerver\llmTranslate.py
 Description: 
 
@@ -15,8 +15,9 @@ import llm
 
 
 class LLMTranslator(Translator.TranslatorInterface):
-     def translate(self,text: str,modelName:str) -> str:  
-        return llm.chat(text,modelName)
+     def translate(self,text: str,settings) -> str:  
+        settings['preset']='Translate Chinese into English'
+        return llm.chat(text,**settings)
 
 
 if __name__ == '__main__':

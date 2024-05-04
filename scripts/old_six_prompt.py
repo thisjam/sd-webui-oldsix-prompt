@@ -2,7 +2,7 @@
 Author: Six_God_K
 Date: 2024-03-24 15:56:01
 LastEditors: Six_God_K
-LastEditTime: 2024-04-27 11:46:16
+LastEditTime: 2024-05-03 16:54:46
 FilePath: \webui\extensions\sd-webui-oldsix-prompt\scripts\old_six_prompt.py
 Description: 
 
@@ -66,7 +66,7 @@ def translate(text):
          return Translator.translate_text(trans_server,text)
      elif(transObj['server']=='llm'):
          trans_server=llmTranslate.LLMTranslator()
-         return Translator.translate_text(trans_server,text,transObj['llmName'])
+         return Translator.translate_text(trans_server,text,transObj)
      elif(transObj['server']=='baidu'):
          trans_server=baidu.BaiduTranslator()
          return Translator.translate_text(trans_server, transObj['appid'],transObj['secret'],text)
@@ -147,10 +147,10 @@ def extract_tags(text):
     return text
     
 transObj={
-     'server':'',
-     'appid':'',
-     'secret':'',
-     'llmName':''
+    #  'server':'',
+    #  'appid':'',
+    #  'secret':'',
+    #  'llmName':''
 }
  
 def on_app_started(_: gr.Blocks, app: FastAPI): 
@@ -166,10 +166,12 @@ def on_app_started(_: gr.Blocks, app: FastAPI):
     @app.post("/api/sixgod/setTransServer")
     async def setTransServer(request:Request):
         postData=await request.json()
-        transObj['server']=postData['server']
-        transObj['appid']=postData['appid']
-        transObj['secret']=postData['secret']
-        transObj['llmName']=postData['llmName']
+        # transObj['server']=postData['server']
+        # transObj['appid']=postData['appid']
+        # transObj['secret']=postData['secret']
+        # transObj['llmName']=postData['llmName']
+   
+        global transObj; transObj= {**postData} 
         return 'ok'
        
     @app.get("/api/sixgod/testTransServer")
@@ -184,8 +186,7 @@ def on_app_started(_: gr.Blocks, app: FastAPI):
     @app.post("/api/sixgod/imaginePrompt")
     async def imaginePrompt(request:Request):#不注明类型无法请求 422
         post = await request.json()
-        Preset='你是一名AI提示词工程师，用提供的关键词构思一副精美的构图画面，只需要提示词，不要你的感受，自定义风格、场景、装饰等，尽量详细，用中文回复'
-        res=llm.chat(post,transObj['llmName'],Preset)
+        res=llm.chat_imagine(post,transObj)
         return res
       
         
